@@ -92,7 +92,7 @@ export interface Settings {
 
 export type SettingsKey = keyof Settings;
 
-export type ElementSource = 'dom' | 'ax' | 'uia';
+export type ElementSource = 'dom' | 'ax' | 'uia' | 'screen';
 
 export interface ElementMeta {
   source?: ElementSource;
