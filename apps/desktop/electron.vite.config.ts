@@ -6,7 +6,16 @@ const core = resolve(__dirname, '../../packages/core/src');
 export default defineConfig({
   main: {
     plugins: [externalizeDepsPlugin()],
-    build: { outDir: resolve(__dirname, 'out/main'), lib: { entry: resolve(__dirname, 'src/main/index.ts') } },
+    build: {
+      outDir: resolve(__dirname, 'out/main'),
+      rollupOptions: {
+        input: {
+          index: resolve(__dirname, 'src/main/index.ts'),
+          'check-capture': resolve(__dirname, 'scripts/check-capture.ts'),
+        },
+        output: { entryFileNames: '[name].js' },
+      },
+    },
   },
   preload: {
     plugins: [externalizeDepsPlugin()],
