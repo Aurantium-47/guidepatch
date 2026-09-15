@@ -2,6 +2,7 @@ import { join } from 'node:path';
 import { app, BrowserWindow, dialog, ipcMain, Menu, nativeImage, shell, Tray } from 'electron';
 import { ask } from './ask';
 import { DesktopRecorder } from './capture/recorder';
+import { type CaptureSettings, loadSettings, saveSettings } from './capture/settings';
 import { CaptureOverlay, type OverlayCommand } from './overlay';
 import { checkForUpdates } from './updater';
 
@@ -10,6 +11,7 @@ let tray: Tray | null = null;
 let overlay: CaptureOverlay | null = null;
 let recorder: DesktopRecorder | null = null;
 let guideId: string | null = null;
+let captureSettings: CaptureSettings | null = null;
 
 function resource(file: string): string {
   return app.isPackaged ? join(process.resourcesPath, file) : join(__dirname, '../../resources', file);
@@ -152,12 +154,21 @@ if (!app.requestSingleInstanceLock()) {
     ipcMain.handle('mimik:version', () => app.getVersion());
 
     overlay = new CaptureOverlay((command) => void onOverlayCommand(command));
+    captureSettings = loadSettings();
     recorder = new DesktopRecorder(
       () => overlay?.region ?? { x: 0, y: 0, width: 0, height: 0 },
       (fn) => (overlay ? overlay.withHidden(fn) : fn()),
       (request) =>
         ask(mainWindow?.webContents ?? null, 'mimik:capture:step', { ...request, guideId }).catch(() => undefined),
+      undefined,
+      () => captureSettings ?? loadSettings(),
     );
+
+    ipcMain.handle('mimik:capture:settings:get', () => captureSettings ?? loadSettings());
+    ipcMain.handle('mimik:capture:settings:set', (_event, patch: Partial<CaptureSettings>) => {
+      captureSettings = saveSettings(patch);
+      return captureSettings;
+    });
     ipcMain.handle('mimik:capture:region', () => overlay?.region);
     ipcMain.handle('mimik:capture:edit', () => overlay?.edit());
 

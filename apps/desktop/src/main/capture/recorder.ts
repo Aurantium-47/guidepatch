@@ -5,14 +5,23 @@ import { focusedWindow } from './focused-window';
 import { type InputAction, InputHook } from './input-hook';
 import type { Region } from './region';
 import { type Capture, captureDisplay } from './screenshot';
+import { type CaptureSettings, DEFAULT_CAPTURE_SETTINGS } from './settings';
 
 const TARGET_SIZE = 28;
 const SETTLE_MS = 60;
+
+export interface CursorMark {
+  x: number;
+  y: number;
+  style: CaptureSettings['cursorStyle'];
+  scale: number;
+}
 
 export interface CaptureRequest {
   action: string;
   elementMeta: ElementMeta;
   image: CaptureImage;
+  cursor?: CursorMark;
 }
 
 export type RecorderStart = { ok: true } | { ok: false; reason: string; detail: string };
@@ -30,6 +39,10 @@ function inside(region: Region, point: { x: number; y: number }): boolean {
   );
 }
 
+export function shouldCapture(settings: CaptureSettings, region: Region, point: { x: number; y: number }): boolean {
+  return inside(region, point) || settings.captureOutsideClicks;
+}
+
 export class DesktopRecorder {
   private hook = new InputHook();
   private queue: Promise<unknown> = Promise.resolve();
@@ -41,6 +54,7 @@ export class DesktopRecorder {
     private readonly withHidden: <T>(fn: () => Promise<T>) => Promise<T>,
     private readonly send: (request: CaptureRequest) => Promise<unknown>,
     private readonly grab: (displayId: number) => Promise<Capture> = captureDisplay,
+    private readonly settings: () => CaptureSettings = () => DEFAULT_CAPTURE_SETTINGS,
   ) {}
 
   async start(): Promise<RecorderStart> {
@@ -73,7 +87,7 @@ export class DesktopRecorder {
   private onAction(action: InputAction): void {
     if (action.kind !== 'click' || !this.isRecording) return;
     const point = { x: action.x, y: action.y };
-    if (!inside(this.region(), point)) return;
+    if (!shouldCapture(this.settings(), this.region(), point)) return;
     this.enqueue(point);
   }
 
@@ -82,24 +96,26 @@ export class DesktopRecorder {
   }
 
   async capture(point: { x: number; y: number }): Promise<void> {
+    const settings = this.settings();
     const region = this.region();
-    const display = screen.getDisplayMatching(region);
+    const framed = inside(region, point) ? region : screen.getDisplayNearestPoint(point).bounds;
+    const display = screen.getDisplayMatching(framed);
     const scale = display.scaleFactor;
 
     const shot = await this.withHidden(async () => {
-      await delay(SETTLE_MS);
+      await delay(SETTLE_MS + settings.screenshotDelayMs);
       return this.grab(display.id);
     });
 
     const cropped = nativeImage.createFromBuffer(Buffer.from(shot.png)).crop({
-      x: Math.round((region.x - display.bounds.x) * scale),
-      y: Math.round((region.y - display.bounds.y) * scale),
-      width: Math.round(region.width * scale),
-      height: Math.round(region.height * scale),
+      x: Math.round((framed.x - display.bounds.x) * scale),
+      y: Math.round((framed.y - display.bounds.y) * scale),
+      width: Math.round(framed.width * scale),
+      height: Math.round(framed.height * scale),
     });
     const size = cropped.getSize();
 
-    const local = { x: point.x - region.x, y: point.y - region.y };
+    const local = { x: point.x - framed.x, y: point.y - framed.y };
     const found = await focusedWindow();
 
     await this.send({
@@ -123,6 +139,7 @@ export class DesktopRecorder {
         ...(found.ok ? { app: found.window.app, window: { title: found.window.title } } : {}),
       },
       image: { png: cropped.toPNG(), width: size.width, height: size.height },
+      ...(settings.showCursor ? { cursor: { x: local.x, y: local.y, style: settings.cursorStyle, scale } } : {}),
     });
   }
 

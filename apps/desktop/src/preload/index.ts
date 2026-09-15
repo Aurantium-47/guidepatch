@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
+import type { CaptureSettings } from '../main/capture/settings';
 
 interface Region {
   x: number;
@@ -12,6 +13,11 @@ const api = {
   capture: {
     region: (): Promise<Region> => ipcRenderer.invoke('mimik:capture:region'),
     edit: (): Promise<void> => ipcRenderer.invoke('mimik:capture:edit'),
+    settings: {
+      get: (): Promise<CaptureSettings> => ipcRenderer.invoke('mimik:capture:settings:get'),
+      set: (patch: Partial<CaptureSettings>): Promise<CaptureSettings> =>
+        ipcRenderer.invoke('mimik:capture:settings:set', patch),
+    },
     onCommand: (handler: (command: string, state: string, region: Region) => void): void => {
       ipcRenderer.on('mimik:capture:command', (_event, command: string, state: string, region: Region) =>
         handler(command, state, region),
