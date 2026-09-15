@@ -228,6 +228,32 @@ settings file to keep in sync, and `openAsHidden` pairs with the `wasOpenedAsHid
 app in `apps/desktop/dist`. `electron-builder.yml` targets dmg/zip, nsis and AppImage/deb, and
 `executableName` must stay set or the binary inherits the scoped package name.
 
+## Desktop Capture Primitives
+
+`apps/desktop/src/main/capture` holds the four things a desktop capture needs. Three come from
+Electron; only two need anything native, and both are prebuilt npm packages rather than a crate we
+maintain.
+
+| Primitive | Source | Native |
+|---|---|---|
+| Displays, DPI, cursor | Electron `screen` | no |
+| Screenshot of a display | Electron `desktopCapturer` | no |
+| Focused foreign window | `get-windows` | prebuilt |
+| Global clicks and keys | `uiohook-napi` | prebuilt |
+
+Anything richer than these four — the accessibility tree in particular — needs an addon we build and
+maintain ourselves, and that is a separate task.
+
+**Linux is X11 only.** `uiohook-napi` links `libX11`/`libXtst` and hooks through `XRecord`, with no
+Wayland path; on a Wayland session the hook starts and then silently delivers nothing. `get-windows`
+shells out to `xwininfo`, also X11. Both are gated on `XDG_SESSION_TYPE` and refuse up front with
+`reason: 'unsupported-session'` rather than appearing to work. Linux also needs `xwininfo` and
+`xprop` on `PATH`. macOS and Windows are unaffected.
+
+`pnpm --filter @mimik/desktop check:capture` builds and exercises every primitive, printing `ok`,
+`n/a` for a platform limit, or `FAIL`. Only `FAIL` sets a non-zero exit, so the check is meaningful
+on a machine where half the primitives cannot work.
+
 ## Export Formats
 
 | Format | Generator | Details |
