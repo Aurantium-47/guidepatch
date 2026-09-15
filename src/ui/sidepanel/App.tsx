@@ -1,8 +1,8 @@
 import { Globe, Search, Settings, Video } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { browser, i18n } from '#imports';
+import { isRecordableUrl } from '@/capture/recordable-tabs';
 import { CaptureState } from '@/core/capture/machine';
-import { isRecordableUrl } from '@/core/capture/recordable-tabs';
 import type { GuideMeSession } from '@/core/guideme/session';
 import { SESSION_KEY } from '@/core/guideme/session';
 import {

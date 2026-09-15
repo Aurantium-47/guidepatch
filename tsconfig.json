@@ -5,8 +5,9 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "allowImportingTsExtensions": true,
     "paths": {
+      "@/core/*": ["./packages/core/src/*"],
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*", "wxt.config.ts", ".wxt/wxt.d.ts"]
+  "include": ["src/**/*", "packages/core/src/**/*", "wxt.config.ts", ".wxt/wxt.d.ts"]
 }

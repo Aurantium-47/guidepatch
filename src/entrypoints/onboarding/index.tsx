@@ -1,3 +1,4 @@
+import '@/lib/core-env';
 import ReactDOM from 'react-dom/client';
 import OnboardingApp from '@/ui/onboarding/App';
 import '@/ui/global.css';

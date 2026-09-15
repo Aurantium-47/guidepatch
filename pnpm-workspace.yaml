@@ -1,2 +1,5 @@
+packages:
+  - packages/*
+
 patchedDependencies:
   jspdf: patches/jspdf.patch

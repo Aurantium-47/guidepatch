@@ -21,6 +21,7 @@ export default defineConfig({
     ],
   },
   alias: {
+    '@/core': 'packages/core/src',
     '@': 'src',
   },
   vite: () => ({
