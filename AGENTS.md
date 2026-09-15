@@ -206,8 +206,7 @@ falls back to `*` without a tag.
 
 ## Desktop Shell
 
-`apps/desktop` is an Electron app that consumes `@mimik/core` the same way the extension does. It
-holds no capture logic yet — that arrives with the native addon and the desktop capture pipeline.
+`apps/desktop` is an Electron app that consumes `@mimik/core` the same way the extension does.
 
 | Piece | File | Purpose |
 |---|---|---|
@@ -274,6 +273,43 @@ is a no-op there, or destroying the first window would quit the app before the s
 
 Two surfaces sharing a guide means two windows of the same app. The extension and the desktop app
 are separate origins with separate stores; moving a guide between them is the portable format's job.
+
+## Capture Area and Controls
+
+The capture region is a screen-coordinate rectangle that survives restarts in
+`capture-region.json` under `app.getPath('userData')`. `clampToDisplays` runs on every load and save,
+so a region stored against a monitor that is no longer attached lands back inside a real work area
+instead of off-screen, and nothing smaller than 240 × 160 is storable.
+
+`CaptureOverlay` owns three kinds of window, all frameless, transparent and `alwaysOnTop` at
+`screen-saver` level:
+
+| Window | When | Input |
+|---|---|---|
+| Editor, one per display | `editing` | interactive — drag to draw, move or resize |
+| Boundary, sized to the region | `armed`, `recording`, `paused` | click-through |
+| Controls bar | `armed`, `recording`, `paused` | interactive |
+
+Editing puts a full-display window on **every** display rather than only the one holding the region,
+which is what makes moving the region to another monitor work: each editor converts client to screen
+coordinates with its own display origin, and whichever one you draw on wins. Outside editing the
+boundary shrinks to the region itself and takes `setIgnoreMouseEvents`, so recording never swallows a
+click. The boundary is solid and pulses while recording, dashed and grey while paused.
+
+Overlays must not appear in their own capture. `setContentProtection(true)` handles that on macOS and
+Windows but is a no-op on Linux, so `overlay.withHidden(fn)` hides every visible overlay for the
+duration of `fn` and restores exactly the ones it hid — the capture pipeline wraps its screenshot in
+it, and that is the only mechanism that holds on all three platforms.
+
+`pnpm --filter @mimik/desktop check:overlay` asserts persistence, clamping, one editor per display,
+controls clearing the region, and the state changes — driving Start and Pause through a real renderer
+click so the preload and IPC path is covered rather than the main-process methods alone. On Linux it
+runs under `xvfb-run` when available (`xorg-server-xvfb`), so the check does not throw always-on-top
+windows over whatever you are doing.
+
+Everything under `out/main` stays flat: `chunkFileNames` is pinned alongside `entryFileNames` because
+main-process code resolves `../renderer` and `../preload` from `__dirname`, and a shared chunk landing
+in `out/main/chunks/` silently breaks every one of those paths.
 
 ## Export Formats
 
