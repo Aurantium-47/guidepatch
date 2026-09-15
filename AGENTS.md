@@ -195,6 +195,10 @@ The identity fields are shared, and every source populates them:
 | `altText` | `img.alt` | `AXHelp` | `HelpText` |
 | `rect` | `getBoundingClientRect()` | `AXPosition` + `AXSize` | `BoundingRectangle` |
 
+A fourth source, `screen`, knows only where the click landed: it fills `rect` with a fixed box around
+the click point, `clickPoint`, `devicePixelRatio`, `app` and `window`, and leaves every identity field
+null.
+
 `tag`, `cssSelector`, `href`, `inputType` and `dataTestId` are DOM-only and absent elsewhere.
 `app` and `window` are the reverse — desktop only.
 
@@ -310,6 +314,42 @@ windows over whatever you are doing.
 Everything under `out/main` stays flat: `chunkFileNames` is pinned alongside `entryFileNames` because
 main-process code resolves `../renderer` and `../preload` from `__dirname`, and a shared chunk landing
 in `out/main/chunks/` silently breaks every one of those paths.
+
+## Desktop Capture Pipeline
+
+A desktop capture produces an ordinary `Guide` with ordinary `Step` and `Screenshot` rows. There is
+no desktop step type and no desktop guide type, so every exporter reads them without knowing where
+they came from.
+
+The work splits across the process boundary the way the extension splits across content script and
+service worker. `DesktopRecorder` in main owns the global input hook, discards clicks outside the
+capture region or while paused, and serialises the rest through a single promise chain so two clicks
+cannot interleave. For each click it hides the overlays, grabs the display, crops to the region with
+`nativeImage.crop`, and hands the pixels to the renderer. `DesktopCaptureSink` in the renderer
+implements `CaptureSink` and writes through `@mimik/core/guides/service`, exactly as the extension's
+`step-pipeline.ts` does.
+
+Main cannot `invoke` a renderer, so `ask()` sends a request with a generated reply channel and waits
+for `ipcMain.once` on it, with a timeout. The preload's `onRequest` is the other half. Guide creation
+and step writes both ride it, because both need IndexedDB, which only the renderer has.
+
+`elementSource` is `'screen'` for these steps: the click point, the region-relative target rect, the
+display scale factor, and the foreground app and window title are all known, but nothing about the
+control under the cursor is. Reading that needs the accessibility tree and is a later task.
+
+`DesktopRecorder` takes the display grab as a constructor argument defaulting to `captureDisplay`, so
+`check:pipeline` feeds it a generated frame. The crop arithmetic, the sink, the step write and all
+four document exporters then run without a working screen-capture path, which matters because
+`desktopCapturer` on Wayland goes through the xdg desktop portal and fails outright when the portal
+does not answer. Whether a real grab works is `check:capture`'s question, not this one's.
+
+`pnpm --filter @mimik/desktop check:pipeline` captures two clicks into a throwaway guide, then
+asserts the steps landed on the guide, the screenshot is cropped to the region, the description came
+from the shared heuristic, and HTML, Markdown, PDF and DOCX all export non-empty.
+
+Descriptions currently render as raw message keys on desktop, because the desktop `CoreEnv` returns
+keys verbatim. Exports are structurally correct and read badly until the desktop has a real message
+catalogue.
 
 ## Export Formats
 
