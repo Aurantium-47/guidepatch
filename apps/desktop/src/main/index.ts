@@ -1,9 +1,11 @@
 import { join } from 'node:path';
 import { app, BrowserWindow, ipcMain, Menu, nativeImage, shell, Tray } from 'electron';
+import { CaptureOverlay, type OverlayCommand } from './overlay';
 import { checkForUpdates } from './updater';
 
 let mainWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
+let overlay: CaptureOverlay | null = null;
 
 function resource(file: string): string {
   return app.isPackaged ? join(process.resourcesPath, file) : join(__dirname, '../../resources', file);
@@ -76,6 +78,7 @@ function refreshTrayMenu(): void {
   tray.setContextMenu(
     Menu.buildFromTemplate([
       { label: 'Open Mimik', click: () => showWindow() },
+      { label: 'Set capture area', click: () => overlay?.edit() },
       { type: 'separator' },
       {
         label: 'Start at login',
@@ -98,6 +101,10 @@ function createTray(): void {
   refreshTrayMenu();
 }
 
+function broadcastOverlay(command: OverlayCommand): void {
+  mainWindow?.webContents.send('mimik:capture:command', command, overlay?.state, overlay?.region);
+}
+
 let isQuitting = false;
 
 function quit(): void {
@@ -118,6 +125,10 @@ if (!app.requestSingleInstanceLock()) {
     });
     ipcMain.handle('mimik:version', () => app.getVersion());
 
+    overlay = new CaptureOverlay(broadcastOverlay);
+    ipcMain.handle('mimik:capture:region', () => overlay?.region);
+    ipcMain.handle('mimik:capture:edit', () => overlay?.edit());
+
     createWindow();
     createTray();
     checkForUpdates({ notifyWhenUpToDate: false });
@@ -126,6 +137,7 @@ if (!app.requestSingleInstanceLock()) {
   app.on('activate', () => showWindow());
   app.on('before-quit', () => {
     isQuitting = true;
+    overlay?.destroy();
   });
   app.on('window-all-closed', () => {});
 }
