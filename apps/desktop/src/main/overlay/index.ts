@@ -53,11 +53,13 @@ export class CaptureOverlay {
   private controls: BrowserWindow | null = null;
   private current: OverlayState = 'hidden';
   private rect: Region;
+  private last: { index: number; title: string } | null = null;
 
   constructor(private onCommand: (command: OverlayCommand) => void) {
     this.rect = loadRegion();
     ipcMain.handle('mimik:overlay:region', () => this.rect);
     ipcMain.handle('mimik:overlay:state', () => this.current);
+    ipcMain.handle('mimik:overlay:last', () => this.last);
     ipcMain.on('mimik:overlay:setRegion', (_event, next: Region) => this.setRegion(next));
     ipcMain.on('mimik:overlay:command', (_event, command: OverlayCommand) => this.command(command));
   }
@@ -77,7 +79,12 @@ export class CaptureOverlay {
   }
 
   private broadcast(): void {
-    for (const win of this.windows()) win.webContents.send('mimik:overlay:update', this.current, this.rect);
+    for (const win of this.windows()) win.webContents.send('mimik:overlay:update', this.current, this.rect, this.last);
+  }
+
+  stepCaptured(index: number, title: string): void {
+    this.last = { index, title };
+    this.broadcast();
   }
 
   private setRegion(next: Region): void {
@@ -179,7 +186,10 @@ export class CaptureOverlay {
     else if (command === 'arm') this.arm();
     else if (command === 'start' || command === 'resume') this.record();
     else if (command === 'pause') this.pause();
-    else this.hide();
+    else {
+      this.last = null;
+      this.hide();
+    }
     this.onCommand(command);
   }
 
@@ -199,7 +209,8 @@ export class CaptureOverlay {
     this.boundary = null;
     this.controls = null;
     this.current = 'hidden';
-    for (const channel of ['mimik:overlay:region', 'mimik:overlay:state']) ipcMain.removeHandler(channel);
+    for (const channel of ['mimik:overlay:region', 'mimik:overlay:state', 'mimik:overlay:last'])
+      ipcMain.removeHandler(channel);
     ipcMain.removeAllListeners('mimik:overlay:setRegion');
     ipcMain.removeAllListeners('mimik:overlay:command');
   }

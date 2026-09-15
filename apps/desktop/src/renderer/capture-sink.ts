@@ -29,7 +29,7 @@ export class DesktopCaptureSink implements CaptureSink {
     return guide.id;
   }
 
-  async captureStep(data: DesktopCaptureStepData): Promise<CaptureStepResponse> {
+  async captureStep(data: DesktopCaptureStepData): Promise<CaptureStepResponse & { title?: string }> {
     const stepId = crypto.randomUUID();
     const meta = data.elementMeta;
     const index = (await getStepsForGuide(data.guideId)).length;
@@ -65,11 +65,13 @@ export class DesktopCaptureSink implements CaptureSink {
       screenshotId = screenshot.id;
     }
 
+    const description = buildFallbackDescription(data.action, meta);
+
     await createStep({
       id: stepId,
       guideId: data.guideId,
       index,
-      description: buildFallbackDescription(data.action, meta),
+      description,
       action: data.action,
       url: '',
       app: meta.app,
@@ -81,7 +83,7 @@ export class DesktopCaptureSink implements CaptureSink {
     });
     await addStepToGuide(data.guideId, stepId);
 
-    return { stepId };
+    return { stepId, title: description };
   }
 
   async updateInputStep(data: UpdateInputStepData): Promise<UpdateInputStepResponse> {

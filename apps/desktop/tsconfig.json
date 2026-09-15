@@ -23,8 +23,12 @@
       ],
       "@/core/*": [
         "../../packages/core/src/*"
+      ],
+      "@mimik/ui/*": [
+        "../../packages/ui/src/*"
       ]
-    }
+    },
+    "jsx": "react-jsx"
   },
   "include": [
     "src/**/*",

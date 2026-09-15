@@ -12,6 +12,7 @@ let overlay: CaptureOverlay | null = null;
 let recorder: DesktopRecorder | null = null;
 let guideId: string | null = null;
 let captureSettings: CaptureSettings | null = null;
+let stepCount = 0;
 
 function resource(file: string): string {
   return app.isPackaged ? join(process.resourcesPath, file) : join(__dirname, '../../resources', file);
@@ -113,6 +114,7 @@ function broadcastOverlay(command: OverlayCommand): void {
 
 async function onOverlayCommand(command: OverlayCommand): Promise<void> {
   if (command === 'start' && !guideId) {
+    stepCount = 0;
     guideId = await ask<string>(mainWindow?.webContents ?? null, 'mimik:capture:startGuide');
     const started = await recorder?.start();
     if (started && !started.ok) {
@@ -158,8 +160,14 @@ if (!app.requestSingleInstanceLock()) {
     recorder = new DesktopRecorder(
       () => overlay?.region ?? { x: 0, y: 0, width: 0, height: 0 },
       (fn) => (overlay ? overlay.withHidden(fn) : fn()),
-      (request) =>
-        ask(mainWindow?.webContents ?? null, 'mimik:capture:step', { ...request, guideId }).catch(() => undefined),
+      async (request) => {
+        const reply = await ask<{ title?: string }>(mainWindow?.webContents ?? null, 'mimik:capture:step', {
+          ...request,
+          guideId,
+        }).catch(() => undefined);
+        if (reply?.title) overlay?.stepCaptured(++stepCount, reply.title);
+        return reply;
+      },
       undefined,
       () => captureSettings ?? loadSettings(),
     );
@@ -171,6 +179,7 @@ if (!app.requestSingleInstanceLock()) {
     });
     ipcMain.handle('mimik:capture:region', () => overlay?.region);
     ipcMain.handle('mimik:capture:edit', () => overlay?.edit());
+    ipcMain.handle('mimik:capture:arm', () => overlay?.arm());
 
     createWindow();
     createTray();
