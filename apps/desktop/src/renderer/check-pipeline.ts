@@ -19,6 +19,17 @@ const sink = new DesktopCaptureSink();
 window.mimik.onRequest('mimik:capture:startGuide', () => sink.startGuide());
 window.mimik.onRequest('mimik:capture:step', (payload) => sink.captureStep(payload as CaptureStepData));
 
+window.mimik.onRequest('mimik:check:blobSizes', async (payload) => {
+  const found = await getGuide(payload as string);
+  if (!found) return [];
+  return found.steps.map((step) => found.screenshots.get(step.id)?.blob.size ?? 0);
+});
+
+window.mimik.onRequest('mimik:check:cleanup', async (payload) => {
+  for (const id of payload as string[]) await permanentlyDeleteGuide(id);
+  return true;
+});
+
 window.mimik.onRequest('mimik:check:verify', async (payload) => {
   const guideId = payload as string;
   const results: CheckResult[] = [];
@@ -80,6 +91,5 @@ window.mimik.onRequest('mimik:check:verify', async (payload) => {
     }
   }
 
-  await permanentlyDeleteGuide(guideId);
   return results;
 });
