@@ -12,7 +12,7 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox --mv3",
     "zip:all": "pnpm zip && pnpm zip:firefox",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && pnpm --filter @mimik/desktop typecheck",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
@@ -20,7 +20,10 @@
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "prepare": "husky",
-    "postinstall": "wxt prepare"
+    "postinstall": "wxt prepare",
+    "dev:desktop": "pnpm --filter @mimik/desktop dev",
+    "build:desktop": "pnpm --filter @mimik/desktop build",
+    "pack:desktop": "pnpm --filter @mimik/desktop pack"
   },
   "keywords": [],
   "author": "",

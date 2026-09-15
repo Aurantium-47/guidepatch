@@ -6,7 +6,14 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["src/**/*.ts", "src/**/*.tsx", "packages/core/src/**/*.ts", "packages/core/src/**/*.tsx", "*.json"]
+    "includes": [
+      "src/**/*.ts",
+      "src/**/*.tsx",
+      "packages/core/src/**/*.ts",
+      "packages/core/src/**/*.tsx",
+      "apps/desktop/src/**/*.ts",
+      "*.json"
+    ]
   },
   "formatter": {
     "enabled": true,

@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": ["electron-vite/node"],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "baseUrl": ".",
+    "paths": {
+      "@mimik/core/*": ["../../packages/core/src/*"],
+      "@/core/*": ["../../packages/core/src/*"]
+    }
+  },
+  "include": ["src/**/*", "electron.vite.config.ts"]
+}

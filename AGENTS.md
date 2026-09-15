@@ -204,6 +204,30 @@ it reaches through `tag === 'input' && inputType === 'checkbox'`. Guide Me is th
 nature — it replays against a live DOM, so `finder.ts` scores `cssSelector` only when present and
 falls back to `*` without a tag.
 
+## Desktop Shell
+
+`apps/desktop` is an Electron app that consumes `@mimik/core` the same way the extension does. It
+holds no capture logic yet — that arrives with the native addon and the desktop capture pipeline.
+
+| Piece | File | Purpose |
+|---|---|---|
+| Main | `src/main/index.ts` | Window, tray, single-instance lock, start-at-login |
+| Updater | `src/main/updater.ts` | `electron-updater`, only ever runs when `app.isPackaged` |
+| Preload | `src/preload/index.ts` | `window.mimik` over `contextBridge`, context isolation on |
+| Renderer | `src/renderer/` | Vite app; aliases `@mimik/core` at the package source |
+
+Electron rather than Tauri because `core/export/video-export.ts` needs WebCodecs, which is
+unreliable in the system webviews Tauri uses — WebKitGTK in particular.
+
+Closing the window hides it; the app keeps running in the tray and only exits through Quit or
+`before-quit`. Start-at-login is stored by the OS via `app.setLoginItemSettings`, so there is no
+settings file to keep in sync, and `openAsHidden` pairs with the `wasOpenedAsHidden` check in
+`ready-to-show` so a login launch does not steal focus.
+
+`pnpm dev:desktop` runs it, `pnpm build:desktop` compiles, `pnpm pack:desktop` produces an unpacked
+app in `apps/desktop/dist`. `electron-builder.yml` targets dmg/zip, nsis and AppImage/deb, and
+`executableName` must stay set or the binary inherits the scoped package name.
+
 ## Export Formats
 
 | Format | Generator | Details |

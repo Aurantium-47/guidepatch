@@ -1,0 +1,29 @@
+:root {
+  color-scheme: light;
+  font-family: system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 40px;
+  background: #eef2ff;
+  color: #1e1b4b;
+}
+
+h1 {
+  margin: 0 0 4px;
+  font-size: 24px;
+}
+
+.meta {
+  margin: 0 0 20px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 14px;
+}
