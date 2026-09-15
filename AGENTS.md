@@ -351,6 +351,36 @@ Descriptions currently render as raw message keys on desktop, because the deskto
 keys verbatim. Exports are structurally correct and read badly until the desktop has a real message
 catalogue.
 
+## Capture Settings
+
+Three settings that only a desktop capture needs live in `capture-settings.json` beside the region,
+read by main rather than by core, because none of them mean anything to the extension.
+
+| Setting | Default | Effect |
+|---|---|---|
+| `showCursor` | on | A pointer is drawn into the screenshot at the click point |
+| `cursorStyle` | `arrow`, `dot` on Linux | Which pointer shape gets drawn |
+| `screenshotDelayMs` | 0, capped at 2000 | Extra wait between the click and the grab |
+| `captureOutsideClicks` | off | Whether clicks beyond the capture area are recorded at all |
+
+`normaliseSettings` runs on every read and write, so an out-of-range delay clamps and an unknown
+cursor style falls back to the platform default rather than reaching the recorder.
+
+Electron exposes no way to read the real system cursor bitmap and `desktopCapturer` never includes
+the pointer, so the shapes are drawn as canvas paths in the renderer. `withCursor` decodes the PNG
+onto an `OffscreenCanvas`, draws the pointer and re-encodes, so the cursor is baked into the stored
+blob rather than living as an annotation. Every exporter therefore shows it with no export-side work,
+and it survives the portable format.
+
+A click outside the capture area cannot be framed by a region that does not contain it, so those
+captures fall back to the whole display the click landed on. `shouldCapture` is exported for that
+decision rather than being inline in the hook handler, so the rule is testable on its own.
+
+`check:pipeline` covers all four: clamping and persistence round-trip through the real file, the
+opt-in rule holds in three positions, a 400 ms delay measurably slows the grab, and the same
+synthetic frame encodes to a different size once a cursor is drawn into it. It restores whatever
+settings were on disk when it finishes.
+
 ## Export Formats
 
 | Format | Generator | Details |
