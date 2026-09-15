@@ -1,4 +1,5 @@
 import PQueue from 'p-queue';
+import { extensionCaptureSink } from '@/capture/sink';
 import { extractDOMContext } from '@/core/capture/dom/context';
 import { extractElementMeta, freezeRect } from '@/core/capture/dom/element-meta';
 import {
@@ -11,11 +12,11 @@ import {
   isTooLarge,
 } from '@/core/capture/dom/element-utils';
 import { isReplayedClick, replayClick, replayInit, shouldInterceptClick } from '@/core/capture/events/click-intercept';
+import type { CaptureSink } from '@/core/capture/sink';
 import { DEFAULT_TARGET_COLOR } from '@/core/screenshot/types';
 import { localStorage } from '@/lib/browser-api';
 import { HoverRing } from '@/lib/hover-ring';
 import { logger } from '@/lib/logger';
-import { sendMessage } from '@/lib/messaging';
 import { InputSession } from './input-session';
 
 const DEDUP_MS = 300;
@@ -70,8 +71,9 @@ class CaptureController {
   constructor(
     private guideId: string,
     isTopFrame: boolean,
+    private sink: CaptureSink,
   ) {
-    this.input = new InputSession(guideId);
+    this.input = new InputSession(guideId, sink);
     this.listeners = [
       ['click', this.onClick.bind(this), ACTIVE_CAPTURE],
       ['auxclick', this.onAuxClick.bind(this), ACTIVE_CAPTURE],
@@ -106,7 +108,7 @@ class CaptureController {
     const atEvent = freezeRect(target);
     return async () => {
       const elementMeta = extractElementMeta(target, atEvent);
-      await sendMessage('captureStep', {
+      await this.sink.captureStep({
         guideId: this.guideId,
         action,
         elementMeta: point ? { ...elementMeta, clickPoint: point } : elementMeta,
@@ -323,8 +325,12 @@ class CaptureController {
   }
 }
 
-export function startCapture(guideId: string, isTopFrame = true): CaptureHandle {
-  const controller = new CaptureController(guideId, isTopFrame);
+export function startCapture(
+  guideId: string,
+  isTopFrame = true,
+  sink: CaptureSink = extensionCaptureSink,
+): CaptureHandle {
+  const controller = new CaptureController(guideId, isTopFrame, sink);
   return {
     stop: () => controller.stop(),
   };

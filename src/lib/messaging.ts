@@ -1,8 +1,14 @@
 import { defineExtensionMessaging } from '@webext-core/messaging';
 import type { RewriteError, RewriteSelectionResponse } from '@/core/capture/ai/rewrite';
-import type { DOMContext } from '@/core/capture/dom/context';
 import type { CaptureStateValue } from '@/core/capture/machine';
-import type { ElementMeta } from '@/core/guides/types';
+import type {
+  CaptureStepData,
+  CaptureStepResponse,
+  FinalizeInputStepData,
+  FinalizeInputStepResponse,
+  UpdateInputStepData,
+  UpdateInputStepResponse,
+} from '@/core/capture/sink';
 
 export interface GetStateResponse {
   state: CaptureStateValue;
@@ -24,35 +30,6 @@ export interface StopRecordingResponse {
   success: boolean;
   guideId?: string;
   inserted?: boolean;
-}
-
-export interface CaptureStepData {
-  guideId: string;
-  action: string;
-  elementMeta: ElementMeta;
-  domContext?: DOMContext;
-}
-
-export type CaptureStepResponse = { stepId: string } | { ignored: true } | { error: string };
-
-export interface UpdateInputStepData {
-  stepId: string;
-  description: string;
-  inputValue?: string;
-}
-
-export interface UpdateInputStepResponse {
-  updated: boolean;
-}
-
-export interface FinalizeInputStepData {
-  stepId: string;
-  elementMeta: ElementMeta;
-  domContext?: DOMContext;
-}
-
-export interface FinalizeInputStepResponse {
-  updated: boolean;
 }
 
 export interface StartGuideMeData {
@@ -146,6 +123,15 @@ interface MimikProtocol {
   rewriteSelection(data: RewriteSelectionData): RewriteSelectionResponse;
 }
 
-export type { RewriteError, RewriteSelectionResponse };
+export type {
+  CaptureStepData,
+  CaptureStepResponse,
+  FinalizeInputStepData,
+  FinalizeInputStepResponse,
+  RewriteError,
+  RewriteSelectionResponse,
+  UpdateInputStepData,
+  UpdateInputStepResponse,
+};
 
 export const { sendMessage, onMessage } = defineExtensionMessaging<MimikProtocol>();
