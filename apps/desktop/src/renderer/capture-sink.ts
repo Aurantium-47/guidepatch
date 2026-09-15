@@ -19,6 +19,9 @@ import {
 } from '@mimik/core/guides/service';
 import type { Screenshot } from '@mimik/core/guides/types';
 import { DEFAULT_TARGET_COLOR } from '@mimik/core/screenshot/types';
+import { type CursorMark, withCursor } from './cursor';
+
+export type DesktopCaptureStepData = CaptureStepData & { cursor?: CursorMark };
 
 export class DesktopCaptureSink implements CaptureSink {
   async startGuide(): Promise<string> {
@@ -26,7 +29,7 @@ export class DesktopCaptureSink implements CaptureSink {
     return guide.id;
   }
 
-  async captureStep(data: CaptureStepData): Promise<CaptureStepResponse> {
+  async captureStep(data: DesktopCaptureStepData): Promise<CaptureStepResponse> {
     const stepId = crypto.randomUUID();
     const meta = data.elementMeta;
     const index = (await getStepsForGuide(data.guideId)).length;
@@ -38,7 +41,9 @@ export class DesktopCaptureSink implements CaptureSink {
       const screenshot: Screenshot = {
         id: crypto.randomUUID(),
         stepId,
-        blob: new Blob([Uint8Array.from(data.image.png)], { type: 'image/png' }),
+        blob: data.cursor
+          ? await withCursor(data.image.png, data.image.width, data.image.height, data.cursor)
+          : new Blob([Uint8Array.from(data.image.png)], { type: 'image/png' }),
         mimeType: 'image/png',
         width: data.image.width,
         height: data.image.height,
