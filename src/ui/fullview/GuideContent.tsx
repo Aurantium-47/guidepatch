@@ -2,7 +2,7 @@ import { History, Loader2, Play, Sparkles } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { TypeAnimation } from 'react-type-animation';
 import { i18n } from '#imports';
-import { startInsertRecording } from '@/core/capture/start-insert-recording';
+import { startInsertRecording } from '@/capture/start-insert-recording';
 import { actionSteps } from '@/core/guides/blocks';
 import {
   deleteStep,

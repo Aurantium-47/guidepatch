@@ -1,4 +1,5 @@
 import { defineExtensionMessaging } from '@webext-core/messaging';
+import type { RewriteError, RewriteSelectionResponse } from '@/core/capture/ai/rewrite';
 import type { DOMContext } from '@/core/capture/dom/context';
 import type { CaptureStateValue } from '@/core/capture/machine';
 import type { ElementMeta } from '@/core/guides/types';
@@ -95,16 +96,9 @@ export interface GenerateGuideDescriptionResponse {
   error?: GuideDescriptionError;
 }
 
-export type RewriteError = 'no-api-key' | 'generation-failed';
-
 export interface RewriteSelectionData {
   text: string;
   instruction: string;
-}
-
-export interface RewriteSelectionResponse {
-  text?: string;
-  error?: RewriteError;
 }
 
 export interface ValidateApiKeyData {
@@ -151,5 +145,7 @@ interface MimikProtocol {
   validateApiKey(data: ValidateApiKeyData): ValidateApiKeyResponse;
   rewriteSelection(data: RewriteSelectionData): RewriteSelectionResponse;
 }
+
+export type { RewriteError, RewriteSelectionResponse };
 
 export const { sendMessage, onMessage } = defineExtensionMessaging<MimikProtocol>();

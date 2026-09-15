@@ -1,7 +1,7 @@
 import { Globe } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { i18n } from '#imports';
-import { getRecordableTabs, type RecordableTab } from '@/core/capture/recordable-tabs';
+import { getRecordableTabs, type RecordableTab } from '@/capture/recordable-tabs';
 import { Button } from '@/ui/components/ui/button';
 import {
   Dialog,

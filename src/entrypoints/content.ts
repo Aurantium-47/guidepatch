@@ -1,10 +1,11 @@
+import '@/lib/core-env';
 import { defineContentScript } from 'wxt/utils/define-content-script';
 import { browser } from '#imports';
-import { BlurManager } from '@/core/blur/manager';
-import { CaptureSession } from '@/core/capture/session';
+import { BlurManager } from '@/blur/manager';
+import { CaptureSession } from '@/capture/session';
 import { updateUrl } from '@/core/capture/spa-nav';
 import { showStartNotification } from '@/core/capture/start-notification';
-import { GuideMeController } from '@/core/guideme/content';
+import { GuideMeController } from '@/guideme/content';
 import { logger } from '@/lib/logger';
 import { TabMessage } from '@/lib/tab-messages';
 
