@@ -19,6 +19,24 @@ export const PRESET_LABELS: Record<PresetKey, string> = {
   macAddress: 'MAC Address',
 };
 
+export const DEFAULT_PRESETS: Record<PresetKey, boolean> = {
+  email: true,
+  phone: true,
+  ssn: false,
+  creditCard: false,
+  ipAddress: false,
+  macAddress: false,
+};
+
+export function activePatterns(presets: PresetKey[]): RegExp[] {
+  const patterns: RegExp[] = [];
+  for (const key of presets) {
+    const regex = PRESET_REGEXES[key];
+    if (regex) patterns.push(new RegExp(regex.source, regex.flags));
+  }
+  return patterns;
+}
+
 export interface MatchRange {
   start: number;
   end: number;

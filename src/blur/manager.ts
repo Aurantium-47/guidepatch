@@ -1,27 +1,20 @@
 import { browser } from '#imports';
+import type { BlurDetector } from '@/core/blur/detector';
 import { BlurPanel } from '@/core/blur/panel';
-import type { PresetKey } from '@/core/blur/regexes';
+import { DEFAULT_PRESETS, type PresetKey } from '@/core/blur/regexes';
 import { BlurScanner } from '@/core/blur/scanner';
 import { injectBlurStyles, removeBlurStyles } from '@/core/blur/styles';
 import { sendMessage } from '@/lib/messaging';
 import { ElementPicker } from './element-picker';
 
-const DEFAULT_PRESETS: Record<PresetKey, boolean> = {
-  email: true,
-  phone: true,
-  ssn: false,
-  creditCard: false,
-  ipAddress: false,
-  macAddress: false,
-};
-
 const EVENTS = ['mimik-blur:update-presets', 'mimik-blur:start-picker', 'mimik-blur:reset', 'mimik-blur:done'] as const;
 
 export class BlurManager {
-  private scanner = new BlurScanner();
   private picker = new ElementPicker();
   private panel: BlurPanel | null = null;
   private active = false;
+
+  constructor(private detector: BlurDetector = new BlurScanner()) {}
 
   async start() {
     if (this.active) return;
@@ -31,7 +24,7 @@ export class BlurManager {
     const presets = await this.loadPresets();
     const activeKeys = (Object.entries(presets) as [PresetKey, boolean][]).filter(([, on]) => on).map(([k]) => k);
 
-    this.scanner.start(activeKeys);
+    this.detector.start(activeKeys);
     this.panel = new BlurPanel(presets);
     this.panel.mount();
 
@@ -41,7 +34,7 @@ export class BlurManager {
   stop() {
     if (!this.active) return;
     this.teardown();
-    this.scanner.stop();
+    this.detector.stop();
     removeBlurStyles();
   }
 
@@ -49,7 +42,7 @@ export class BlurManager {
     this.active = false;
     this.panel?.unmount();
     this.panel = null;
-    this.scanner.detach();
+    this.detector.detach();
     this.picker.stop();
     for (const event of EVENTS) document.removeEventListener(event, this.handleEvent);
   }
@@ -58,7 +51,7 @@ export class BlurManager {
     switch (e.type) {
       case 'mimik-blur:update-presets': {
         const activeKeys = (e as CustomEvent<{ presets: PresetKey[] }>).detail.presets;
-        this.scanner.updatePresets(activeKeys);
+        this.detector.updatePresets(activeKeys);
         this.savePresets(activeKeys);
         break;
       }
@@ -66,7 +59,7 @@ export class BlurManager {
         this.picker.start(() => this.picker.stop());
         break;
       case 'mimik-blur:reset':
-        this.scanner.unblurAll();
+        this.detector.unblurAll();
         break;
       case 'mimik-blur:done':
         this.teardown();
