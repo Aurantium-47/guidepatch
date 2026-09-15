@@ -7,6 +7,17 @@ declare global {
     mimik: {
       version(): Promise<string>;
       openAtLogin: { get(): Promise<boolean>; set(enabled: boolean): Promise<boolean> };
+      capture: {
+        region(): Promise<{ x: number; y: number; width: number; height: number }>;
+        edit(): Promise<void>;
+        onCommand(
+          handler: (
+            command: string,
+            state: string,
+            region: { x: number; y: number; width: number; height: number },
+          ) => void,
+        ): void;
+      };
     };
   }
 }
@@ -14,7 +25,11 @@ declare global {
 const root = document.getElementById('root') as HTMLElement;
 
 async function render(): Promise<void> {
-  const [version, atLogin] = await Promise.all([window.mimik.version(), window.mimik.openAtLogin.get()]);
+  const [version, atLogin, region] = await Promise.all([
+    window.mimik.version(),
+    window.mimik.openAtLogin.get(),
+    window.mimik.capture.region(),
+  ]);
   root.replaceChildren();
 
   const title = document.createElement('h1');
@@ -37,7 +52,19 @@ async function render(): Promise<void> {
   shared.className = 'meta';
   shared.textContent = `Smart Blur categories from @mimik/core: ${Object.values(PRESET_LABELS).join(', ')}`;
 
-  root.append(title, meta, label, shared);
+  const area = document.createElement('p');
+  area.className = 'meta';
+  area.textContent = `Capture area ${region.width} × ${region.height} at ${region.x}, ${region.y}`;
+
+  const edit = document.createElement('button');
+  edit.textContent = 'Set capture area';
+  edit.addEventListener('click', () => window.mimik.capture.edit());
+
+  window.mimik.capture.onCommand((_command, _state, next) => {
+    area.textContent = `Capture area ${next.width} × ${next.height} at ${next.x}, ${next.y}`;
+  });
+
+  root.append(title, meta, label, area, edit, shared);
 }
 
 render();

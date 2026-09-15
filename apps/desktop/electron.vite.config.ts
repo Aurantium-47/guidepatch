@@ -13,8 +13,9 @@ export default defineConfig({
           index: resolve(__dirname, 'src/main/index.ts'),
           'check-capture': resolve(__dirname, 'scripts/check-capture.ts'),
           'check-storage': resolve(__dirname, 'scripts/check-storage.ts'),
+          'check-overlay': resolve(__dirname, 'scripts/check-overlay.ts'),
         },
-        output: { entryFileNames: '[name].js' },
+        output: { entryFileNames: '[name].js', chunkFileNames: '[name].js' },
       },
     },
   },
@@ -22,7 +23,13 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()],
     build: {
       outDir: resolve(__dirname, 'out/preload'),
-      lib: { entry: resolve(__dirname, 'src/preload/index.ts'), formats: ['cjs'], fileName: () => 'index.cjs' },
+      rollupOptions: {
+        input: {
+          index: resolve(__dirname, 'src/preload/index.ts'),
+          overlay: resolve(__dirname, 'src/preload/overlay.ts'),
+        },
+        output: { format: 'cjs', entryFileNames: '[name].cjs' },
+      },
     },
   },
   renderer: {
@@ -35,6 +42,7 @@ export default defineConfig({
         input: {
           index: resolve(__dirname, 'src/renderer/index.html'),
           'check-storage': resolve(__dirname, 'src/renderer/check-storage.html'),
+          overlay: resolve(__dirname, 'src/renderer/overlay.html'),
         },
       },
     },
