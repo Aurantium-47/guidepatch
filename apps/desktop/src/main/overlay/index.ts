@@ -38,7 +38,10 @@ function overlayWindow(bounds: Electron.Rectangle, hash: string, interactive: bo
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   win.setContentProtection(true);
   if (!interactive) win.setIgnoreMouseEvents(true);
-  win.loadFile(rendererFile(), { hash }).catch((error) => {
+  const load = process.env.ELECTRON_RENDERER_URL
+    ? win.loadURL(`${process.env.ELECTRON_RENDERER_URL}/overlay.html#${hash}`)
+    : win.loadFile(rendererFile(), { hash });
+  load.catch((error) => {
     process.stderr.write(`overlay window ${hash} failed to load: ${error}\n`);
   });
   return win;
