@@ -26,6 +26,32 @@ export async function blobToArrayBuffer(blob: Blob): Promise<ArrayBuffer> {
   return await blob.arrayBuffer();
 }
 
+export interface StepContext {
+  label: string;
+  href?: string;
+}
+
+function truncateLabel(label: string, max: number): string {
+  return label.length > max ? `${label.slice(0, max - 1)}…` : label;
+}
+
+export function stepContext(step: Step, max = 72): StepContext | null {
+  if (step.url) {
+    try {
+      const parsed = new URL(step.url);
+      const path = parsed.pathname === '/' ? '' : parsed.pathname;
+      return { label: truncateLabel(`${parsed.hostname.replace(/^www\./, '')}${path}`, max), href: step.url };
+    } catch {
+      return { label: step.url, href: step.url };
+    }
+  }
+  if (step.app) {
+    const title = step.window?.title;
+    return { label: truncateLabel(title ? `${step.app.name} — ${title}` : step.app.name, max) };
+  }
+  return null;
+}
+
 export function extractDomain(steps: Step[]): string | null {
   const stepWithUrl = steps.find((s) => s.url);
   if (!stepWithUrl) return null;

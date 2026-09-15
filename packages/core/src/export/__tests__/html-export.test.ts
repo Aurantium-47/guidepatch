@@ -96,3 +96,32 @@ describe('exportGuideAsHTML screenshot embedding', () => {
     expect(rendered).toHaveBeenCalledTimes(2);
   });
 });
+
+describe('exportGuideAsHTML mixed browser and desktop steps', () => {
+  beforeEach(() => {
+    rendered.mockReset();
+    rendered.mockImplementation(async () => new Blob(['rendered'], { type: 'image/webp' }));
+  });
+
+  it('links a browser step and renders a desktop step as plain text', async () => {
+    const browserStep = makeStep(0);
+    const desktopStep: Step = {
+      ...makeStep(1),
+      url: '',
+      app: { name: 'Excel', id: 'com.microsoft.Excel' },
+      window: { title: 'Budget.xlsx' },
+    };
+    const shots = new Map([
+      [browserStep.id, makeScreenshot(browserStep.id)],
+      [desktopStep.id, makeScreenshot(desktopStep.id)],
+    ]);
+
+    const html = await render([browserStep, desktopStep], shots);
+
+    expect(html).toContain('<a href="https://example.com/page"');
+    expect(html).toContain('example.com/page');
+    expect(html).toContain('Excel — Budget.xlsx');
+    expect(html).not.toContain('<a href="">');
+    expect(html.match(/Excel — Budget\.xlsx<\/a>/)).toBeNull();
+  });
+});

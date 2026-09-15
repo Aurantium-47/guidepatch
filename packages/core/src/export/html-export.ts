@@ -12,6 +12,7 @@ import {
   MAX_DESC_LINES,
   MAX_LEAD_LINES,
   MAX_TITLE_LINES,
+  stepContext,
 } from '@/core/export/utils';
 import { actionSteps, calloutAccent, isBlock, stepNumbers, tint, variantLabel } from '@/core/guides/blocks';
 import type { Guide, Screenshot, Step } from '@/core/guides/types';
@@ -57,16 +58,6 @@ function blockSection(step: Step): string {
       </section>`;
 }
 
-function stepUrlLabel(url: string): string {
-  try {
-    const parsed = new URL(url);
-    const label = `${parsed.hostname.replace(/^www\./, '')}${parsed.pathname === '/' ? '' : parsed.pathname}`;
-    return label.length > 72 ? `${label.slice(0, 71)}…` : label;
-  } catch {
-    return url;
-  }
-}
-
 export async function exportGuideAsHTML(
   guide: Guide,
   steps: Step[],
@@ -100,10 +91,12 @@ export async function exportGuideAsHTML(
     }
 
     const stepNumber = String(number).padStart(2, '0');
-    const urlHtml =
-      step.url && opts.stepUrls
-        ? `<a href="${escapeHtml(step.url)}" target="_blank" rel="noopener" style="font-size:14px;font-weight:400;color:${accent};">${escapeHtml(stepUrlLabel(step.url))}</a>`
-        : '';
+    const ctx = opts.stepUrls ? stepContext(step) : null;
+    const urlHtml = !ctx
+      ? ''
+      : ctx.href
+        ? `<a href="${escapeHtml(ctx.href)}" target="_blank" rel="noopener" style="font-size:14px;font-weight:400;color:${accent};">${escapeHtml(ctx.label)}</a>`
+        : `<span style="font-size:14px;font-weight:400;color:${accent};">${escapeHtml(ctx.label)}</span>`;
 
     stepSections.push(`
       <section data-step="${number}" style="display:flex;gap:8mm;margin-bottom:13mm;">

@@ -8,6 +8,7 @@ import {
   extractDomain,
   fitImage,
   formatDate,
+  stepContext,
 } from '@/core/export/utils';
 import type { Step } from '@/core/guides/types';
 
@@ -189,5 +190,44 @@ describe('containFit', () => {
 
   it('falls back to the box for a degenerate source', () => {
     expect(containFit(0, 0, 143, 80)).toEqual({ width: 143, height: 80, x: 0, y: 0 });
+  });
+});
+
+describe('stepContext', () => {
+  function step(overrides: Partial<Step>): Step {
+    return {
+      id: 's1',
+      guideId: 'g1',
+      index: 0,
+      description: 'Do the thing',
+      action: 'click',
+      url: '',
+      timestamp: 0,
+      ...overrides,
+    };
+  }
+
+  it('labels a browser step by host and path, and links it', () => {
+    const ctx = stepContext(step({ url: 'https://www.example.com/settings/profile' }));
+    expect(ctx).toEqual({ label: 'example.com/settings/profile', href: 'https://www.example.com/settings/profile' });
+  });
+
+  it('labels a desktop step by app and window, with nothing to link to', () => {
+    const ctx = stepContext(step({ app: { name: 'Excel' }, window: { title: 'Budget.xlsx' } }));
+    expect(ctx).toEqual({ label: 'Excel — Budget.xlsx' });
+    expect(ctx?.href).toBeUndefined();
+  });
+
+  it('falls back to the app name when the window has no title', () => {
+    expect(stepContext(step({ app: { name: 'Excel' }, window: { title: null } }))?.label).toBe('Excel');
+  });
+
+  it('returns nothing when a step has neither', () => {
+    expect(stepContext(step({}))).toBeNull();
+  });
+
+  it('truncates at the limit the caller asks for', () => {
+    const long = stepContext(step({ app: { name: 'A'.repeat(200) } }), 64);
+    expect(long?.label).toHaveLength(64);
   });
 });

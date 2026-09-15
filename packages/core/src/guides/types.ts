@@ -31,6 +31,8 @@ export interface Step {
   description: string;
   action: string;
   url: string;
+  app?: { name: string; id?: string };
+  window?: { title: string | null };
   timestamp: number;
   screenshotId?: string;
   elementMeta?: ElementMeta;
