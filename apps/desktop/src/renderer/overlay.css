@@ -1,0 +1,203 @@
+:root {
+  --accent: #4f46e5;
+  --deep: #1e1b4b;
+  --lavender: #c7d2fe;
+  --muted: #6b7280;
+  --success: #059669;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  font-family: system-ui, sans-serif;
+  color: var(--lavender);
+  user-select: none;
+  cursor: default;
+}
+
+body.editor {
+  cursor: crosshair;
+}
+
+#region {
+  position: absolute;
+  box-shadow: 0 0 0 100vmax rgba(30, 27, 75, 0.38);
+  outline: 2px dashed var(--accent);
+  outline-offset: -1px;
+  cursor: move;
+}
+
+#region.empty {
+  display: none;
+}
+
+#size {
+  position: absolute;
+  top: -26px;
+  left: 0;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--deep);
+  color: var(--lavender);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--accent);
+  border-radius: 3px;
+  background: #fff;
+}
+
+.handle[data-handle^='n'] {
+  top: -6px;
+}
+.handle[data-handle^='s'] {
+  bottom: -6px;
+}
+.handle[data-handle$='w'] {
+  left: -6px;
+}
+.handle[data-handle$='e'] {
+  right: -6px;
+}
+.handle[data-handle='n'],
+.handle[data-handle='s'] {
+  left: calc(50% - 6px);
+}
+.handle[data-handle='w'],
+.handle[data-handle='e'] {
+  top: calc(50% - 6px);
+}
+.handle[data-handle='n'],
+.handle[data-handle='s'] {
+  cursor: ns-resize;
+}
+.handle[data-handle='w'],
+.handle[data-handle='e'] {
+  cursor: ew-resize;
+}
+.handle[data-handle='nw'],
+.handle[data-handle='se'] {
+  cursor: nwse-resize;
+}
+.handle[data-handle='ne'],
+.handle[data-handle='sw'] {
+  cursor: nesw-resize;
+}
+
+#hint {
+  position: absolute;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--deep);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+#hint b {
+  color: #fff;
+  font-weight: 600;
+}
+
+body.boundary #frame {
+  position: absolute;
+  inset: 0;
+  border: 3px solid var(--accent);
+  border-radius: 2px;
+}
+
+body.boundary[data-state='recording'] #frame {
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+body.boundary[data-state='paused'] #frame {
+  border-style: dashed;
+  border-color: var(--muted);
+  animation: none;
+}
+
+body.boundary[data-state='armed'] #frame {
+  border-style: dashed;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    border-color: var(--accent);
+  }
+  50% {
+    border-color: var(--lavender);
+  }
+}
+
+body.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border-radius: 12px;
+  background: var(--deep);
+  -webkit-app-region: drag;
+}
+
+#status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: auto;
+  padding-left: 4px;
+  font-size: 12px;
+}
+
+#dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+body.controls[data-state='recording'] #dot {
+  background: var(--success);
+  animation: blink 1.4s ease-in-out infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+button {
+  -webkit-app-region: no-drag;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: rgba(199, 210, 254, 0.14);
+  color: var(--lavender);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: rgba(199, 210, 254, 0.26);
+}
+
+button.primary {
+  background: var(--accent);
+  color: #fff;
+}
