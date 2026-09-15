@@ -18,6 +18,15 @@ const api = {
       );
     },
   },
+  onRequest: (channel: string, handler: (payload: unknown) => Promise<unknown>): void => {
+    ipcRenderer.on(channel, async (_event, replyChannel: string, payload: unknown) => {
+      try {
+        ipcRenderer.send(replyChannel, await handler(payload));
+      } catch (error) {
+        ipcRenderer.send(replyChannel, { error: error instanceof Error ? error.message : String(error) });
+      }
+    });
+  },
   openAtLogin: {
     get: (): Promise<boolean> => ipcRenderer.invoke('mimik:openAtLogin:get'),
     set: (enabled: boolean): Promise<boolean> => ipcRenderer.invoke('mimik:openAtLogin:set', enabled),

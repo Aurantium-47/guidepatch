@@ -1,11 +1,18 @@
 import type { DOMContext } from '@/core/capture/dom/context';
 import type { ElementMeta } from '@/core/guides/types';
 
+export interface CaptureImage {
+  png: Uint8Array;
+  width: number;
+  height: number;
+}
+
 export interface CaptureStepData {
   guideId: string;
   action: string;
   elementMeta: ElementMeta;
   domContext?: DOMContext;
+  image?: CaptureImage;
 }
 
 export type CaptureStepResponse = { stepId: string } | { ignored: true } | { error: string };
