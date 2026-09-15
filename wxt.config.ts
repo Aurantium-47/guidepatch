@@ -21,6 +21,8 @@ export default defineConfig({
     ],
   },
   alias: {
+    '@mimik/core': 'packages/core/src',
+    '@mimik/ui': 'packages/ui/src',
     '@/core': 'packages/core/src',
     '@': 'src',
   },

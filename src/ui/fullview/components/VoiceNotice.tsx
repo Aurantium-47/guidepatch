@@ -1,9 +1,9 @@
+import { Tooltip, TooltipContent, TooltipTrigger } from '@mimik/ui/components/ui/tooltip';
 import { Check, Loader2, TriangleAlert, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { browser, i18n } from '#imports';
 import { getVoiceStatus } from '@/lib/offscreen';
 import { observeVoiceFromBackground, type PanelVoiceUpdate } from '@/lib/port';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/components/ui/tooltip';
 import { voiceNotice } from '../voice-notice';
 
 const IDLE: PanelVoiceUpdate = { type: 'VOICE_UPDATE', phase: 'idle' };

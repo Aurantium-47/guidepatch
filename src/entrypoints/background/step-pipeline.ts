@@ -1,3 +1,4 @@
+import { logger } from '@mimik/ui/lib/logger';
 import { AI_KEY_SETTINGS, resolveAiKey } from '@/core/capture/ai/keys';
 import type { DOMContext } from '@/core/capture/dom/context';
 import { CaptureState } from '@/core/capture/machine';
@@ -13,7 +14,6 @@ import {
 import type { ElementMeta, Screenshot, Step } from '@/core/guides/types';
 import { DEFAULT_TARGET_COLOR } from '@/core/screenshot/types';
 import { captureVisibleTab, localStorage } from '@/lib/browser-api';
-import { logger } from '@/lib/logger';
 import type { CaptureStepData, CaptureStepResponse } from '@/lib/messaging';
 import { getActor } from './actor';
 import { generateAiDescription } from './ai-description';

@@ -1,3 +1,4 @@
+import { Button } from '@mimik/ui/components/ui/button';
 import { Download, FileCode, FileDown, FileImage, FileText, Loader2, Video } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { i18n } from '#imports';
@@ -8,7 +9,6 @@ import { exportGuideAsPDF } from '@/core/export/pdf-export';
 import { canExportVideo } from '@/core/export/video-support';
 import { getGuide } from '@/core/guides/service';
 import type { Guide, Screenshot, Step } from '@/core/guides/types';
-import { Button } from '@/ui/components/ui/button';
 
 interface ExportMenuProps {
   guideId: string;

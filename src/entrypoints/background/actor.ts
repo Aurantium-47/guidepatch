@@ -1,7 +1,7 @@
+import { logger } from '@mimik/ui/lib/logger';
 import { createActor } from 'xstate';
 import { type CaptureSnapshot, type CaptureStateValue, captureMachine } from '@/core/capture/machine';
 import { sessionStorage } from '@/lib/browser-api';
-import { logger } from '@/lib/logger';
 import type { PanelStateUpdate } from '@/lib/port';
 import type { ActorRef } from './types';
 

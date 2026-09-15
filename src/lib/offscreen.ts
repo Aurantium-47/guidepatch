@@ -1,5 +1,5 @@
+import { logger } from '@mimik/ui/lib/logger';
 import { createTab, getExtensionURL, onMessage, sendMessage } from './browser-api';
-import { logger } from './logger';
 import { localVoiceHost } from './voice-local';
 import {
   isVoiceMessageFor,

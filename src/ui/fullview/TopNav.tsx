@@ -1,14 +1,14 @@
+import { Button } from '@mimik/ui/components/ui/button';
+import type { Route } from '@mimik/ui/fullview/router';
+import { navigate } from '@mimik/ui/fullview/router';
+import { logger } from '@mimik/ui/lib/logger';
+import MascotIcon from '@mimik/ui/shared/MascotIcon';
+import { useFullview } from '@mimik/ui/stores/fullview';
 import { Check, ChevronRight, Download, FileText, History, Pencil, Search, Star, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { i18n } from '#imports';
 import { createSnapshot } from '@/core/guides/service';
-import { logger } from '@/lib/logger';
-import { useFullview } from '@/stores/fullview';
-import { Button } from '@/ui/components/ui/button';
-import MascotIcon from '@/ui/shared/MascotIcon';
 import ExportPreviewModal from './ExportPreviewModal';
-import type { Route } from './router';
-import { navigate } from './router';
 
 interface TopNavProps {
   route: Route;

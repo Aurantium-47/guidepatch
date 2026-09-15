@@ -1,7 +1,7 @@
+import { logger } from '@mimik/ui/lib/logger';
 import { browser } from '#imports';
 import type { AiFailureReason } from '@/core/capture/ai/errors';
 import type { CaptureStateValue } from '@/core/capture/machine';
-import { logger } from '@/lib/logger';
 import type { VoiceErrorReason } from '@/lib/voice-messages';
 
 const PORT_NAME = 'mimik-panel';

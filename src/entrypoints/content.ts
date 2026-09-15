@@ -1,4 +1,6 @@
 import '@/lib/core-env';
+import '@/lib/ui-env';
+import { logger } from '@mimik/ui/lib/logger';
 import { defineContentScript } from 'wxt/utils/define-content-script';
 import { browser } from '#imports';
 import { BlurManager } from '@/blur/manager';
@@ -6,7 +8,6 @@ import { CaptureSession } from '@/capture/session';
 import { updateUrl } from '@/core/capture/spa-nav';
 import { showStartNotification } from '@/core/capture/start-notification';
 import { GuideMeController } from '@/guideme/content';
-import { logger } from '@/lib/logger';
 import { TabMessage } from '@/lib/tab-messages';
 
 const CLEANUP_EVENT = `mimik_cleanup_${browser.runtime.id}`;

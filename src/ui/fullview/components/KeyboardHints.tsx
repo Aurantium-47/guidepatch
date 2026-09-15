@@ -1,4 +1,4 @@
-import { i18n } from '#imports';
+import { i18n } from '@mimik/core/env';
 
 const hints = [
   { key: '↑↓', labelKey: 'keyboard_navigate' as const },

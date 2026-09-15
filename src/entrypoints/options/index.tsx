@@ -1,4 +1,5 @@
 import '@/lib/core-env';
+import '@/lib/ui-env';
 import ReactDOM from 'react-dom/client';
 import App from '@/ui/options/App';
 import '@/ui/options/index.css';

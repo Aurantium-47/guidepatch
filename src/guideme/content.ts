@@ -1,10 +1,10 @@
+import { logger } from '@mimik/ui/lib/logger';
 import { browser } from '#imports';
 import { findElement } from '@/core/guideme/finder';
 import { GuideMeOverlay } from '@/core/guideme/overlay';
 import type { GuideMeSession } from '@/core/guideme/session';
 import { BLOCKED_KEY, MANUAL_KEY, SESSION_KEY, STEP_KEY } from '@/core/guideme/session';
 import type { Step } from '@/core/guides/types';
-import { logger } from '@/lib/logger';
 import { sendMessage } from '@/lib/messaging';
 
 const MAX_RETRIES = 5;

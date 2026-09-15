@@ -1,7 +1,7 @@
-import { i18n } from '#imports';
-import type { Guide } from '@/core/guides/types';
-import { formatDateShort } from '@/lib/utils';
-import FaviconImg from '@/ui/shared/FaviconImg';
+import { i18n } from '@mimik/core/env';
+import type { Guide } from '@mimik/core/guides/types';
+import { formatDateShort } from '@mimik/ui/lib/utils';
+import FaviconImg from '@mimik/ui/shared/FaviconImg';
 
 interface GuideResult {
   guide: Guide;

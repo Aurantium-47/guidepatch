@@ -1,9 +1,9 @@
+import { logger } from '@mimik/ui/lib/logger';
 import { i18n } from '#imports';
 import { extractDOMContext } from '@/core/capture/dom/context';
 import { extractElementMeta, type FrozenRect, freezeRect } from '@/core/capture/dom/element-meta';
 import { getFieldLabel, getFieldValue, isRedactedField, isSensitiveField } from '@/core/capture/dom/element-utils';
 import type { CaptureSink } from '@/core/capture/sink';
-import { logger } from '@/lib/logger';
 
 export class InputSession {
   stepId: string | null = null;

@@ -1,12 +1,12 @@
+import { Tooltip, TooltipContent, TooltipTrigger } from '@mimik/ui/components/ui/tooltip';
+import { logger } from '@mimik/ui/lib/logger';
 import { Mic, MicOff } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { browser, i18n } from '#imports';
 import { hasVoiceApiKey, VOICE_KEY_SETTINGS } from '@/core/capture/voice/api-key';
 import { getActiveTab, localStorage } from '@/lib/browser-api';
-import { logger } from '@/lib/logger';
 import { sendMessage } from '@/lib/messaging';
 import { abortVoiceCapture, openMicPermissionPage } from '@/lib/offscreen';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/components/ui/tooltip';
 
 interface MicToggleProps {
   enabled: boolean;

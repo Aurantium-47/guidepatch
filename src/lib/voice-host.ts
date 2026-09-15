@@ -1,7 +1,7 @@
+import { logger } from '@mimik/ui/lib/logger';
 import { partialRecording } from '@/core/capture/voice/partial-recording';
 import type { NarrationResult } from '@/core/capture/voice/types';
 import { getExtensionURL, onMessage, sendMessage } from './browser-api';
-import { logger } from './logger';
 import { MicRecorder, type MicRecording } from './mic-recorder';
 import {
   isVoiceMessageFor,

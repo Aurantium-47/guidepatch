@@ -1,3 +1,6 @@
+import { Tooltip, TooltipContent, TooltipTrigger } from '@mimik/ui/components/ui/tooltip';
+import { formatRelativeTime } from '@mimik/ui/lib/utils';
+import FaviconImg from '@mimik/ui/shared/FaviconImg';
 import { Star, Trash2 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { i18n } from '#imports';
@@ -10,9 +13,6 @@ import {
   toggleStar,
 } from '@/core/guides/service';
 import type { Guide } from '@/core/guides/types';
-import { formatRelativeTime } from '@/lib/utils';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/components/ui/tooltip';
-import FaviconImg from '@/ui/shared/FaviconImg';
 
 interface LibraryViewProps {
   onOpen: (guideId: string) => void;

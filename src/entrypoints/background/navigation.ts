@@ -1,3 +1,4 @@
+import { logger } from '@mimik/ui/lib/logger';
 import { CaptureState } from '@/core/capture/machine';
 import {
   getTab,
@@ -7,7 +8,6 @@ import {
   onTabUpdated,
   sendMessageToTab,
 } from '@/lib/browser-api';
-import { logger } from '@/lib/logger';
 import { TabMessage } from '@/lib/tab-messages';
 import { getActor, waitUntilReady } from './actor';
 import { injectContentScript, isInjectableTab } from './tab-manager';

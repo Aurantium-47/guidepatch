@@ -1,3 +1,6 @@
+import { extractDomain } from '@mimik/ui/lib/utils';
+import FaviconImg from '@mimik/ui/shared/FaviconImg';
+import ScreenshotView from '@mimik/ui/shared/ScreenshotView';
 import { ArrowLeft, Check, ChevronLeft, ChevronRight, TriangleAlert } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { browser, i18n } from '#imports';
@@ -8,9 +11,6 @@ import { actionSteps } from '@/core/guides/blocks';
 import { getGuide } from '@/core/guides/service';
 import type { Guide, Screenshot, Step } from '@/core/guides/types';
 import { sendMessage } from '@/lib/messaging';
-import { extractDomain } from '@/lib/utils';
-import FaviconImg from '@/ui/shared/FaviconImg';
-import ScreenshotView from '@/ui/shared/ScreenshotView';
 
 interface GuideMeViewProps {
   guideId: string;

@@ -33,6 +33,7 @@
     "@ai-sdk/anthropic": "^3.0.64",
     "@ai-sdk/openai": "^3.0.49",
     "@fontsource/poppins": "^5.2.7",
+    "@mimik/ui": "workspace:*",
     "@tailwindcss/vite": "^4.2.2",
     "@vidstack/react": "^1.15.6",
     "@webext-core/messaging": "^2.3.0",

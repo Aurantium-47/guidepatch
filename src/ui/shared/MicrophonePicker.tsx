@@ -1,10 +1,10 @@
+import { i18n } from '@mimik/core/env';
+import { Button } from '@mimik/ui/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@mimik/ui/components/ui/select';
 import { Check, ChevronRight, Mic, MicOff, Square, TriangleAlert } from 'lucide-react';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
-import { i18n } from '#imports';
 import { getActiveTab } from '@/lib/browser-api';
 import { openMicPermissionPage } from '@/lib/offscreen';
-import { Button } from '@/ui/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/components/ui/select';
 import {
   isMicrophoneMissing,
   type MicrophoneDevice,
