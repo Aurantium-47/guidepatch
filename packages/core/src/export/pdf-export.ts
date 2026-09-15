@@ -18,6 +18,7 @@ import {
   MAX_LEAD_LINES,
   MAX_TITLE_LINES,
   pxToMm,
+  stepContext,
 } from '@/core/export/utils';
 import { actionSteps, calloutAccent, isBlock, stepNumbers, tint } from '@/core/guides/blocks';
 import type { Guide, Screenshot, Step } from '@/core/guides/types';
@@ -290,8 +291,9 @@ export async function exportGuideAsPDF(
     let ux = TEXT_X + widthOf(doc, descLines[descLines.length - 1], 11, true);
     let uy = sy + 6 + (descLines.length - 1) * 5;
 
-    if (step.url && opts.stepUrls) {
-      const label = stepUrlLabel(step.url);
+    const stepCtx = opts.stepUrls ? stepContext(step, 64) : null;
+    if (stepCtx) {
+      const label = stepCtx.label;
       doc.setFontSize(9);
       doc.setFont('helvetica', 'normal');
       const sep = '   ·   ';
@@ -306,10 +308,14 @@ export async function exportGuideAsPDF(
         ux += sepW;
       }
       doc.setTextColor(...accent);
-      doc.textWithLink(label, ux, uy, { url: step.url });
-      doc.setDrawColor(...accent);
-      doc.setLineWidth(0.2);
-      doc.line(ux, uy + 0.9, ux + urlW, uy + 0.9);
+      if (stepCtx.href) {
+        doc.textWithLink(label, ux, uy, { url: stepCtx.href });
+        doc.setDrawColor(...accent);
+        doc.setLineWidth(0.2);
+        doc.line(ux, uy + 0.9, ux + urlW, uy + 0.9);
+      } else {
+        doc.text(label, ux, uy);
+      }
     }
 
     let iy = uy + 4;
@@ -382,14 +388,4 @@ function drawBlock(doc: jsPDF, step: Step, y: number, nextPage: () => number): n
   doc.rect(MARGIN, sy + CALLOUT_RADIUS, CALLOUT_BAR_W, boxH - CALLOUT_RADIUS * 2, 'F');
   writeLines(doc, lines, textX, sy + CALLOUT_PAD_Y + CALLOUT_BASELINE, CALLOUT_SIZE, false, INK, CALLOUT_LINE_H);
   return sy + boxH + BLOCK_GAP;
-}
-
-function stepUrlLabel(url: string): string {
-  try {
-    const parsed = new URL(url);
-    const label = `${parsed.hostname.replace(/^www\./, '')}${parsed.pathname === '/' ? '' : parsed.pathname}`;
-    return label.length > 64 ? `${label.slice(0, 63)}…` : label;
-  } catch {
-    return url;
-  }
 }

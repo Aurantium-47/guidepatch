@@ -22,7 +22,7 @@ import {
 import { i18n } from '@/core/env';
 import { type Branding, dataUrlToBytes, fitLogo, loadBranding } from '@/core/export/branding';
 import { type ExportOptions, IMAGE_SCALE_FACTORS, loadExportOptions } from '@/core/export/options';
-import { blobToArrayBuffer, extractDomain, formatDate } from '@/core/export/utils';
+import { blobToArrayBuffer, extractDomain, formatDate, stepContext } from '@/core/export/utils';
 import { actionSteps, calloutAccent, isBlock, stepNumbers, tint } from '@/core/guides/blocks';
 import type { Guide, Screenshot, Step } from '@/core/guides/types';
 import { logger } from '@/core/logger';
@@ -75,16 +75,6 @@ export function fitDocxImageSize(
     width: Math.max(1, Math.round(screenshotWidth * scale)),
     height: Math.max(1, Math.round(screenshotHeight * scale)),
   };
-}
-
-function stepUrlLabel(url: string): string {
-  try {
-    const parsed = new URL(url);
-    const label = `${parsed.hostname.replace(/^www\./, '')}${parsed.pathname === '/' ? '' : parsed.pathname}`;
-    return label.length > 64 ? `${label.slice(0, 63)}…` : label;
-  } catch {
-    return url;
-  }
 }
 
 function plainCell(children: Paragraph[], widthMm: number, rightGapMm = 0, bottom = false): TableCell {
@@ -307,27 +297,30 @@ async function buildStepTable(
 ): Promise<Table> {
   const accent = bare(brand.accent);
   const stepNumber = String(number).padStart(2, '0');
+  const stepCtx = opts.stepUrls ? stepContext(step, 64) : null;
 
   const textChildren: Paragraph[] = [
     new Paragraph({
       spacing: { after: 140 },
       children: [
         new TextRun({ text: step.description, bold: true, color: INK, size: 22, font: DOCX_FONT_FAMILY }),
-        ...(step.url && opts.stepUrls
+        ...(stepCtx
           ? [
               new TextRun({ text: '   ·   ', color: MUTED, size: 18, font: DOCX_FONT_FAMILY }),
-              new ExternalHyperlink({
-                link: step.url,
-                children: [
-                  new TextRun({
-                    text: stepUrlLabel(step.url),
-                    color: accent,
-                    underline: { type: UnderlineType.SINGLE, color: accent },
-                    size: 18,
-                    font: DOCX_FONT_FAMILY,
-                  }),
-                ],
-              }),
+              stepCtx.href
+                ? new ExternalHyperlink({
+                    link: stepCtx.href,
+                    children: [
+                      new TextRun({
+                        text: stepCtx.label,
+                        color: accent,
+                        underline: { type: UnderlineType.SINGLE, color: accent },
+                        size: 18,
+                        font: DOCX_FONT_FAMILY,
+                      }),
+                    ],
+                  })
+                : new TextRun({ text: stepCtx.label, color: accent, size: 18, font: DOCX_FONT_FAMILY }),
             ]
           : []),
       ],
