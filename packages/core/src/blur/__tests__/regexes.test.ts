@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { findMatches, PRESET_LABELS, PRESET_REGEXES, type PresetKey } from '../regexes';
+import { activePatterns, findMatches, PRESET_LABELS, PRESET_REGEXES, type PresetKey } from '../regexes';
 
 describe('PRESET_LABELS', () => {
   it('has a label for every preset key', () => {
@@ -360,5 +360,23 @@ describe('PRESET_REGEXES', () => {
     for (const pattern of Object.values(PRESET_REGEXES)) {
       expect(pattern.flags).toContain('g');
     }
+  });
+});
+
+describe('activePatterns', () => {
+  it('maps only the categories that are switched on', () => {
+    expect(activePatterns(['email', 'ssn'])).toHaveLength(2);
+    expect(activePatterns([])).toHaveLength(0);
+  });
+
+  it('hands out fresh regexes so a stale lastIndex cannot drop a match', () => {
+    const [first] = activePatterns(['email']);
+    first.exec('contact me at a@b.co please');
+    expect(first.lastIndex).toBeGreaterThan(0);
+
+    const [second] = activePatterns(['email']);
+    expect(second).not.toBe(first);
+    expect(second.lastIndex).toBe(0);
+    expect(findMatches('a@b.co', activePatterns(['email']))).toHaveLength(1);
   });
 });

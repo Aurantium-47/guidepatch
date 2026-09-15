@@ -1,4 +1,5 @@
-import { findMatches, type MatchRange, PRESET_REGEXES, type PresetKey } from './regexes';
+import type { BlurDetector } from './detector';
+import { activePatterns, findMatches, type MatchRange, type PresetKey } from './regexes';
 import { injectBlurStyles } from './styles';
 
 const BLUR_CLASS = 'mimik-blur';
@@ -7,7 +8,7 @@ const PEEK_CLASS = 'mimik-blur-peek';
 const INPUT_BLUR = 'blur(10px)';
 const EXCLUDED_TAGS = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT', 'IFRAME', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION']);
 
-export class BlurScanner {
+export class BlurScanner implements BlurDetector {
   private observer: MutationObserver | null = null;
   private debounceTimer: ReturnType<typeof setTimeout> | null = null;
   private onInput: (() => void) | null = null;
@@ -39,17 +40,8 @@ export class BlurScanner {
     if (this.debounceTimer) clearTimeout(this.debounceTimer);
   }
 
-  private getActivePatterns(): RegExp[] {
-    const patterns: RegExp[] = [];
-    for (const key of this.activePresets) {
-      const regex = PRESET_REGEXES[key];
-      if (regex) patterns.push(new RegExp(regex.source, regex.flags));
-    }
-    return patterns;
-  }
-
   private scan() {
-    const patterns = this.getActivePatterns();
+    const patterns = activePatterns(this.activePresets);
     if (patterns.length === 0) return;
     this.blurTextNodes(document.body, patterns);
     this.blurInputFields(patterns);
