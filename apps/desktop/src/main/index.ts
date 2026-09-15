@@ -1,11 +1,15 @@
 import { join } from 'node:path';
-import { app, BrowserWindow, ipcMain, Menu, nativeImage, shell, Tray } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Menu, nativeImage, shell, Tray } from 'electron';
+import { ask } from './ask';
+import { DesktopRecorder } from './capture/recorder';
 import { CaptureOverlay, type OverlayCommand } from './overlay';
 import { checkForUpdates } from './updater';
 
 let mainWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let overlay: CaptureOverlay | null = null;
+let recorder: DesktopRecorder | null = null;
+let guideId: string | null = null;
 
 function resource(file: string): string {
   return app.isPackaged ? join(process.resourcesPath, file) : join(__dirname, '../../resources', file);
@@ -102,7 +106,29 @@ function createTray(): void {
 }
 
 function broadcastOverlay(command: OverlayCommand): void {
-  mainWindow?.webContents.send('mimik:capture:command', command, overlay?.state, overlay?.region);
+  mainWindow?.webContents.send('mimik:capture:command', command, overlay?.state, overlay?.region, guideId);
+}
+
+async function onOverlayCommand(command: OverlayCommand): Promise<void> {
+  if (command === 'start' && !guideId) {
+    guideId = await ask<string>(mainWindow?.webContents ?? null, 'mimik:capture:startGuide');
+    const started = await recorder?.start();
+    if (started && !started.ok) {
+      guideId = null;
+      overlay?.hide();
+      dialog.showErrorBox('Mimik cannot record', started.detail);
+      return;
+    }
+  } else if (command === 'pause') {
+    recorder?.pause();
+  } else if (command === 'resume') {
+    recorder?.resume();
+  } else if (command === 'stop' || command === 'cancel') {
+    recorder?.stop();
+    await recorder?.drain();
+    guideId = null;
+  }
+  broadcastOverlay(command);
 }
 
 let isQuitting = false;
@@ -125,7 +151,13 @@ if (!app.requestSingleInstanceLock()) {
     });
     ipcMain.handle('mimik:version', () => app.getVersion());
 
-    overlay = new CaptureOverlay(broadcastOverlay);
+    overlay = new CaptureOverlay((command) => void onOverlayCommand(command));
+    recorder = new DesktopRecorder(
+      () => overlay?.region ?? { x: 0, y: 0, width: 0, height: 0 },
+      (fn) => (overlay ? overlay.withHidden(fn) : fn()),
+      (request) =>
+        ask(mainWindow?.webContents ?? null, 'mimik:capture:step', { ...request, guideId }).catch(() => undefined),
+    );
     ipcMain.handle('mimik:capture:region', () => overlay?.region);
     ipcMain.handle('mimik:capture:edit', () => overlay?.edit());
 
@@ -137,6 +169,7 @@ if (!app.requestSingleInstanceLock()) {
   app.on('activate', () => showWindow());
   app.on('before-quit', () => {
     isQuitting = true;
+    recorder?.stop();
     overlay?.destroy();
   });
   app.on('window-all-closed', () => {});

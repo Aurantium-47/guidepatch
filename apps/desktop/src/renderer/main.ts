@@ -1,26 +1,13 @@
 import './core-env';
 import { PRESET_LABELS } from '@mimik/core/blur/regexes';
+import type { CaptureStepData } from '@mimik/core/capture/sink';
+import { getGuides } from '@mimik/core/guides/service';
+import { DesktopCaptureSink } from './capture-sink';
 import './style.css';
 
-declare global {
-  interface Window {
-    mimik: {
-      version(): Promise<string>;
-      openAtLogin: { get(): Promise<boolean>; set(enabled: boolean): Promise<boolean> };
-      capture: {
-        region(): Promise<{ x: number; y: number; width: number; height: number }>;
-        edit(): Promise<void>;
-        onCommand(
-          handler: (
-            command: string,
-            state: string,
-            region: { x: number; y: number; width: number; height: number },
-          ) => void,
-        ): void;
-      };
-    };
-  }
-}
+const sink = new DesktopCaptureSink();
+window.mimik.onRequest('mimik:capture:startGuide', () => sink.startGuide());
+window.mimik.onRequest('mimik:capture:step', (payload) => sink.captureStep(payload as CaptureStepData));
 
 const root = document.getElementById('root') as HTMLElement;
 
@@ -60,11 +47,20 @@ async function render(): Promise<void> {
   edit.textContent = 'Set capture area';
   edit.addEventListener('click', () => window.mimik.capture.edit());
 
+  const library = document.createElement('p');
+  library.className = 'meta';
+  const refresh = async () => {
+    const guides = await getGuides();
+    library.textContent = `${guides.length} guide(s) in the library`;
+  };
+  await refresh();
+
   window.mimik.capture.onCommand((_command, _state, next) => {
     area.textContent = `Capture area ${next.width} × ${next.height} at ${next.x}, ${next.y}`;
+    void refresh();
   });
 
-  root.append(title, meta, label, area, edit, shared);
+  root.append(title, meta, label, area, edit, library, shared);
 }
 
 render();
