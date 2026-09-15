@@ -2,8 +2,8 @@ import { i18n } from '#imports';
 import { extractDOMContext } from '@/core/capture/dom/context';
 import { extractElementMeta, type FrozenRect, freezeRect } from '@/core/capture/dom/element-meta';
 import { getFieldLabel, getFieldValue, isRedactedField, isSensitiveField } from '@/core/capture/dom/element-utils';
+import type { CaptureSink } from '@/core/capture/sink';
 import { logger } from '@/lib/logger';
-import { sendMessage } from '@/lib/messaging';
 
 export class InputSession {
   stepId: string | null = null;
@@ -12,7 +12,10 @@ export class InputSession {
   private guideId: string;
   private atEvent: FrozenRect | undefined;
 
-  constructor(guideId: string) {
+  constructor(
+    guideId: string,
+    private sink: CaptureSink,
+  ) {
     this.guideId = guideId;
   }
 
@@ -22,7 +25,7 @@ export class InputSession {
 
   async start(target: HTMLElement, atEvent?: FrozenRect) {
     this.atEvent = atEvent;
-    const res = await sendMessage('captureStep', {
+    const res = await this.sink.captureStep({
       guideId: this.guideId,
       action: 'input',
       elementMeta: extractElementMeta(target, atEvent),
@@ -40,16 +43,16 @@ export class InputSession {
     const label = getFieldLabel(target);
     if (isSensitiveField(target) || isRedactedField(target)) {
       const description = isSensitiveField(target) ? i18n.t('steps.typeSecret') : i18n.t('steps.typeInto', [label]);
-      sendMessage('updateInputStep', { stepId: this.stepId, description }).catch((err) =>
-        logger.warn('Failed to update input step', err),
-      );
+      this.sink
+        .updateInputStep({ stepId: this.stepId, description })
+        .catch((err) => logger.warn('Failed to update input step', err));
       return;
     }
     const val = getFieldValue(target);
     const desc = val ? `Type "${val}" in ${label}` : `Clear ${label}`;
-    sendMessage('updateInputStep', { stepId: this.stepId, description: desc, inputValue: val || undefined }).catch(
-      (err) => logger.warn('Failed to update input step', err),
-    );
+    this.sink
+      .updateInputStep({ stepId: this.stepId, description: desc, inputValue: val || undefined })
+      .catch((err) => logger.warn('Failed to update input step', err));
   }
 
   async finalize() {
@@ -60,7 +63,7 @@ export class InputSession {
     this.stepId = null;
     this.target = null;
     this.atEvent = undefined;
-    await sendMessage('finalizeInputStep', {
+    await this.sink.finalizeInputStep({
       stepId,
       elementMeta: extractElementMeta(target, atEvent),
       domContext: extractDOMContext(target, 'input'),

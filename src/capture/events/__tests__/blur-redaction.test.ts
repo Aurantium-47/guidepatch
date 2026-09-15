@@ -2,10 +2,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { extractDOMContext } from '@/core/capture/dom/context';
 import { isRedactedField } from '@/core/capture/dom/element-utils';
-import { sendMessage } from '@/lib/messaging';
+import type { CaptureSink } from '@/core/capture/sink';
 import { InputSession } from '../input-session';
 
-vi.mock('@/lib/messaging', () => ({ sendMessage: vi.fn(), onMessage: vi.fn() }));
+const updateInputStep = vi.fn();
+const sink: CaptureSink = {
+  captureStep: vi.fn(async () => ({ stepId: 'step-1' })),
+  updateInputStep,
+  finalizeInputStep: vi.fn(async () => ({ updated: true })),
+};
 
 function blurredInput(value: string): HTMLInputElement {
   const el = document.createElement('input');
@@ -19,8 +24,8 @@ function blurredInput(value: string): HTMLInputElement {
 
 beforeEach(() => {
   document.body.innerHTML = '';
-  vi.mocked(sendMessage).mockReset();
-  vi.mocked(sendMessage).mockResolvedValue({ stepId: 'step-1' } as never);
+  updateInputStep.mockReset();
+  updateInputStep.mockResolvedValue({ updated: true });
 });
 
 describe('isRedactedField', () => {
@@ -62,13 +67,13 @@ describe('DOM context sent to the AI', () => {
 describe('InputSession.update on a blurred field', () => {
   it('stores no value and keeps it out of the description', async () => {
     const el = blurredInput('sk-live-abcdef');
-    const session = new InputSession('guide-1');
+    const session = new InputSession('guide-1', sink);
     await session.start(el);
-    vi.mocked(sendMessage).mockClear();
+    updateInputStep.mockClear();
 
     session.update(el);
 
-    const [, payload] = vi.mocked(sendMessage).mock.calls[0];
+    const [payload] = updateInputStep.mock.calls[0];
     expect(payload).not.toHaveProperty('inputValue');
     expect(JSON.stringify(payload)).not.toContain('sk-live-abcdef');
   });
@@ -79,13 +84,13 @@ describe('InputSession.update on a blurred field', () => {
     el.value = 'ada';
     el.setAttribute('aria-label', 'Name');
     document.body.appendChild(el);
-    const session = new InputSession('guide-1');
+    const session = new InputSession('guide-1', sink);
     await session.start(el);
-    vi.mocked(sendMessage).mockClear();
+    updateInputStep.mockClear();
 
     session.update(el);
 
-    const [, payload] = vi.mocked(sendMessage).mock.calls[0];
+    const [payload] = updateInputStep.mock.calls[0];
     expect(payload).toMatchObject({ inputValue: 'ada' });
   });
 });
