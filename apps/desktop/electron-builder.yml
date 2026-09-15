@@ -1,0 +1,29 @@
+appId: io.westpoint.mimik
+productName: Mimik
+executableName: mimik
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - out/**
+  - package.json
+extraResources:
+  - from: resources
+    to: .
+publish:
+  provider: github
+  owner: westpoint-io
+  repo: mimik
+mac:
+  category: public.app-category.productivity
+  target:
+    - dmg
+    - zip
+win:
+  target:
+    - nsis
+linux:
+  category: Utility
+  target:
+    - AppImage
+    - deb

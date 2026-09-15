@@ -1,0 +1,28 @@
+{
+  "name": "@mimik/desktop",
+  "version": "1.1.1",
+  "private": true,
+  "type": "module",
+  "main": "out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "pack": "electron-vite build && electron-builder --dir",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "electron-updater": "^6.6.2",
+    "@mimik/core": "workspace:*"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^2.3.0",
+    "vite": "^6.0.3"
+  },
+  "description": "Mimik desktop shell",
+  "author": {
+    "name": "Westpoint",
+    "email": "hello@westpoint.io"
+  }
+}
