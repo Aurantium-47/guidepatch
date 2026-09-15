@@ -59,6 +59,7 @@ function getCandidateValue(el: HTMLElement, signal: string): string | null {
 }
 
 function scoreCssSelector(meta: ElementMeta, candidate: HTMLElement): number {
+  if (!meta.cssSelector) return 0;
   try {
     const matched = document.querySelector(meta.cssSelector);
     return matched === candidate ? 1 : 0;
@@ -75,7 +76,7 @@ function scoreCandidate(
 
   for (const [key, weight] of Object.entries(WEIGHTS)) {
     if (key === 'cssSelector') {
-      activeSignals.push({ key, weight });
+      if (meta.cssSelector) activeSignals.push({ key, weight });
       continue;
     }
     const storedValue = meta[key as keyof ElementMeta];
@@ -114,7 +115,7 @@ function scoreCandidate(
 }
 
 function findElement(meta: ElementMeta): FindResult {
-  const candidates = document.querySelectorAll<HTMLElement>(meta.tag);
+  const candidates = document.querySelectorAll<HTMLElement>(meta.tag ?? '*');
   let bestResult: FindResult = { element: null, score: 0, matchDetails: {} };
 
   for (const candidate of candidates) {

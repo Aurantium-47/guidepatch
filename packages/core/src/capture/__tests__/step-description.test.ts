@@ -109,3 +109,44 @@ describe('buildFallbackDescription', () => {
     expect(result).toBe(`steps.click[${'A'.repeat(80)}]`);
   });
 });
+
+describe('accessibility-tree sources', () => {
+  function axMeta(overrides: Partial<ElementMeta> = {}): ElementMeta {
+    return {
+      source: 'ax',
+      textContent: null,
+      ariaLabel: null,
+      placeholder: null,
+      altText: null,
+      name: null,
+      role: null,
+      rect: { x: 0, y: 0, width: 0, height: 0 },
+      devicePixelRatio: 2,
+      app: { name: 'Excel', id: 'com.microsoft.Excel' },
+      window: { title: 'Budget.xlsx' },
+      ...overrides,
+    };
+  }
+
+  it('describes a click with no DOM fields at all', () => {
+    expect(buildFallbackDescription('click', axMeta({ name: 'Save' }))).toBe('steps.click[Save]');
+  });
+
+  it('reaches the same checkbox wording through role as the DOM does through tag', () => {
+    const viaRole = buildFallbackDescription('click', axMeta({ role: 'checkbox', name: 'Wrap text' }));
+    const viaTag = buildFallbackDescription(
+      'click',
+      makeMeta({ tag: 'input', inputType: 'checkbox', ariaLabel: 'Wrap text' }),
+    );
+    expect(viaRole).toBe('steps.toggleCheckbox[Wrap text]');
+    expect(viaTag).toBe(viaRole);
+  });
+
+  it('falls back to role when nothing nameable is present', () => {
+    expect(buildFallbackDescription('click', axMeta({ role: 'button' }))).toBe('steps.click[button]');
+  });
+
+  it('describes typing without an inputType', () => {
+    expect(buildFallbackDescription('input', axMeta({ name: 'Cell B4' }))).toBe('steps.typeInto[Cell B4]');
+  });
+});

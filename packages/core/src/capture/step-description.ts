@@ -9,7 +9,8 @@ export function buildFallbackDescription(action: string, meta: ElementMeta): str
     meta.altText ||
     meta.name ||
     meta.role ||
-    meta.tag;
+    meta.tag ||
+    '';
 
   if (action.startsWith('keydown:')) {
     const key = action.split(':')[1];

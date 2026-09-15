@@ -176,6 +176,34 @@ Extraction walks up from the target element to find:
 - Nearest heading
 - Sibling interactive elements in the same container (max 10)
 
+## Element Metadata
+
+`ElementMeta` describes the thing the user acted on, and it is written by more than one kind of
+capture. `source` says which — `dom` in the extension, `ax` on macOS, `uia` on Windows. It is absent
+on records captured before the field existed, so read it through `elementSource(meta)`, which
+defaults to `dom`.
+
+The identity fields are shared, and every source populates them:
+
+| Field | DOM | macOS AX | Windows UIAutomation |
+|---|---|---|---|
+| `role` | `role` attribute, else tag name | `AXRole` | `ControlType` |
+| `name` | `name` attribute | `AXTitle` | `Name` |
+| `textContent` | trimmed text | `AXValue` / `AXSelectedText` | `Value` |
+| `ariaLabel` | `aria-label` | `AXDescription` / `AXARIAValueText` | `HelpText` |
+| `placeholder` | `placeholder` | `AXPlaceholderValue` | `Placeholder` |
+| `altText` | `img.alt` | `AXHelp` | `HelpText` |
+| `rect` | `getBoundingClientRect()` | `AXPosition` + `AXSize` | `BoundingRectangle` |
+
+`tag`, `cssSelector`, `href`, `inputType` and `dataTestId` are DOM-only and absent elsewhere.
+`app` and `window` are the reverse — desktop only.
+
+Consumers must not branch on `source`. Read the shared fields first and treat the DOM-only ones as
+refinements: `buildFallbackDescription` reaches the same wording through `role === 'checkbox'` that
+it reaches through `tag === 'input' && inputType === 'checkbox'`. Guide Me is the exception by
+nature — it replays against a live DOM, so `finder.ts` scores `cssSelector` only when present and
+falls back to `*` without a tag.
+
 ## Export Formats
 
 | Format | Generator | Details |
