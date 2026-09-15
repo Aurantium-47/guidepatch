@@ -44,6 +44,7 @@ export function extractElementMeta(el: HTMLElement, atEvent?: FrozenRect): Eleme
     cssSelector = el.tagName?.toLowerCase() ?? 'unknown';
   }
   return {
+    source: 'dom',
     tag: el.tagName?.toLowerCase() ?? 'unknown',
     cssSelector,
     textContent: getCleanText(el),

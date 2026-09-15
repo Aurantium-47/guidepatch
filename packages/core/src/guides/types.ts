@@ -90,21 +90,30 @@ export interface Settings {
 
 export type SettingsKey = keyof Settings;
 
+export type ElementSource = 'dom' | 'ax' | 'uia';
+
 export interface ElementMeta {
-  tag: string;
-  cssSelector: string;
+  source?: ElementSource;
   textContent: string | null;
   ariaLabel: string | null;
   placeholder: string | null;
   altText: string | null;
   name: string | null;
   role: string | null;
-  href: string | null;
-  inputType: string | null;
-  dataTestId: string | null;
   rect: { x: number; y: number; width: number; height: number };
   devicePixelRatio: number;
   clickPoint?: { x: number; y: number };
+  tag?: string;
+  cssSelector?: string;
+  href?: string | null;
+  inputType?: string | null;
+  dataTestId?: string | null;
+  app?: { name: string; id?: string };
+  window?: { title: string | null };
+}
+
+export function elementSource(meta: ElementMeta): ElementSource {
+  return meta.source ?? 'dom';
 }
 
 export interface Snapshot {
