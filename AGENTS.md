@@ -254,6 +254,27 @@ shells out to `xwininfo`, also X11. Both are gated on `XDG_SESSION_TYPE` and ref
 `n/a` for a platform limit, or `FAIL`. Only `FAIL` sets a non-zero exit, so the check is meaningful
 on a machine where half the primitives cannot work.
 
+## Desktop Storage
+
+The desktop app reuses `@mimik/core/guides` unchanged — Electron's Chromium provides IndexedDB, so
+`MimikDB`, the service layer and the Dexie migrations all carry over with no rewrite. `MimikDB` takes
+an optional database name so a check can open a throwaway store instead of the user's `mimik` one.
+
+Core reaches the surface through `configureCore`, so every desktop entry point imports
+`src/renderer/core-env.ts` for its side effect, exactly as the extension imports `src/lib/core-env.ts`.
+The desktop adapter backs settings with `window.localStorage` and returns message keys verbatim —
+desktop strings land with the desktop UI.
+
+`pnpm --filter @mimik/desktop check:storage` runs four checks across two hidden `BrowserWindow`s:
+the v1 to v2 upgrade against a real v1 store, `MimikDB` opening at v2 with all four tables, a guide
+written through the core service, and that same guide read back from a second renderer process with
+its screenshot `Blob` intact. Results come back over a tagged `console-message` rather than IPC, so
+the check windows need no `nodeIntegration` and no production preload channel. `window-all-closed`
+is a no-op there, or destroying the first window would quit the app before the second one ran.
+
+Two surfaces sharing a guide means two windows of the same app. The extension and the desktop app
+are separate origins with separate stores; moving a guide between them is the portable format's job.
+
 ## Export Formats
 
 | Format | Generator | Details |

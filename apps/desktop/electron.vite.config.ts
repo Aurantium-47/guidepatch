@@ -12,6 +12,7 @@ export default defineConfig({
         input: {
           index: resolve(__dirname, 'src/main/index.ts'),
           'check-capture': resolve(__dirname, 'scripts/check-capture.ts'),
+          'check-storage': resolve(__dirname, 'scripts/check-storage.ts'),
         },
         output: { entryFileNames: '[name].js' },
       },
@@ -30,7 +31,12 @@ export default defineConfig({
     build: {
       outDir: resolve(__dirname, 'out/renderer'),
       emptyOutDir: true,
-      rollupOptions: { input: resolve(__dirname, 'src/renderer/index.html') },
+      rollupOptions: {
+        input: {
+          index: resolve(__dirname, 'src/renderer/index.html'),
+          'check-storage': resolve(__dirname, 'src/renderer/check-storage.html'),
+        },
+      },
     },
   },
 });

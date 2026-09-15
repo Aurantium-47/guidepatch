@@ -1,3 +1,4 @@
+import './core-env';
 import { PRESET_LABELS } from '@mimik/core/blur/regexes';
 import './style.css';
 

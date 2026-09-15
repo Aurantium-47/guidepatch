@@ -2,6 +2,7 @@ import type { NarrationUpdate } from '@/core/capture/voice/narration-updates';
 import { i18n } from '@/core/env';
 import type { ScreenshotEdits } from '@/core/screenshot/types';
 import { db } from './db';
+import { getMostCommonDomain } from './domain';
 import { hashPayload } from './snapshot-hash';
 import type { BlockType, CalloutVariant, DescriptionSource, Guide, Screenshot, Snapshot, Step } from './types';
 
@@ -278,7 +279,6 @@ export async function deleteStep(guideId: string, stepId: string): Promise<void>
 }
 
 export async function getGuideDomain(guideId: string): Promise<string> {
-  const { getMostCommonDomain } = await import('@/lib/utils');
   const steps = await db.steps.where('guideId').equals(guideId).sortBy('index');
   return getMostCommonDomain(steps);
 }
