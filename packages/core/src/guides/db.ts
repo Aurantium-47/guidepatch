@@ -7,8 +7,8 @@ export class MimikDB extends Dexie {
   screenshots!: EntityTable<Screenshot, 'id'>;
   snapshots!: EntityTable<Snapshot, 'id'>;
 
-  constructor() {
-    super('mimik');
+  constructor(name = 'mimik') {
+    super(name);
     this.version(1).stores({
       guides: 'id, createdAt, updatedAt, starred, deletedAt',
       steps: 'id, guideId, index',

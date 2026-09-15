@@ -9,13 +9,15 @@
     "build": "electron-vite build",
     "pack": "electron-vite build && electron-builder --dir",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "check:capture": "electron-vite build && electron out/main/check-capture.js"
+    "check:capture": "electron-vite build && electron out/main/check-capture.js",
+    "check:storage": "electron-vite build && electron out/main/check-storage.js"
   },
   "dependencies": {
     "electron-updater": "^6.6.2",
     "@mimik/core": "workspace:*",
     "uiohook-napi": "^1.5.5",
-    "get-windows": "^9.3.0"
+    "get-windows": "^9.3.0",
+    "dexie": "^4.3.0"
   },
   "devDependencies": {
     "electron": "^33.2.1",
