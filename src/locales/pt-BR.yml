@@ -152,6 +152,24 @@ blurPresets:
   ipAddress: Endereço IP
   macAddress: Endereço MAC
 
+desktop:
+  record: Record
+  captureArea: Capture area
+  capturing: Capturing
+  paused: Paused
+  ready: Ready
+  lastStep: Last step
+  noStepsYet: No steps captured yet
+  pause: Pause
+  resume: Resume
+  finish: Finish
+  showCursor: Show the cursor in screenshots
+  pointerStyle: Pointer style
+  screenshotDelay: Screenshot delay
+  captureOutside: Capture clicks outside the capture area
+  capturingSection: Capturing
+  milliseconds: ms
+
 fullview:
   allGuides: Todos os guias
   starred: Favoritos
