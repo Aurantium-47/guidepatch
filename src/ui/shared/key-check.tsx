@@ -1,8 +1,8 @@
+import { i18n } from '@mimik/core/env';
+import { Input } from '@mimik/ui/components/ui/input';
 import { Check, Eye, EyeOff, TriangleAlert } from 'lucide-react';
 import { useCallback, useRef, useState } from 'react';
-import { i18n } from '#imports';
 import { sendMessage } from '@/lib/messaging';
-import { Input } from '@/ui/components/ui/input';
 
 export type KeyStatus = 'checking' | 'valid' | 'rejected' | 'unreachable' | 'model-required' | 'model-invalid' | null;
 

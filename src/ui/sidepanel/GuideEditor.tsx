@@ -1,3 +1,9 @@
+import { Tooltip, TooltipContent, TooltipTrigger } from '@mimik/ui/components/ui/tooltip';
+import { getMostCommonDomain } from '@mimik/ui/lib/utils';
+import BlockCard from '@mimik/ui/shared/BlockCard';
+import EmptyGuideState from '@mimik/ui/shared/EmptyGuideState';
+import FaviconImg from '@mimik/ui/shared/FaviconImg';
+import StepCard from '@mimik/ui/sidepanel/StepCard';
 import { ArrowLeft, Maximize2, Play } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { i18n } from '#imports';
@@ -7,12 +13,6 @@ import type { Guide, Screenshot, Step } from '@/core/guides/types';
 import { dominantRatio } from '@/core/screenshot/geometry';
 import { createTab, focusWindow, getExtensionURL, queryTabs, updateTab } from '@/lib/browser-api';
 import { sendMessage } from '@/lib/messaging';
-import { getMostCommonDomain } from '@/lib/utils';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/components/ui/tooltip';
-import BlockCard from '@/ui/shared/BlockCard';
-import EmptyGuideState from '@/ui/shared/EmptyGuideState';
-import FaviconImg from '@/ui/shared/FaviconImg';
-import StepCard from './StepCard';
 
 interface GuideEditorProps {
   guideId: string;

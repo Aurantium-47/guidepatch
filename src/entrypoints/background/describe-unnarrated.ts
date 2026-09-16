@@ -1,5 +1,5 @@
+import { logger } from '@mimik/ui/lib/logger';
 import { applyAiDescription, clearStepAiPending } from '@/core/guides/service';
-import { logger } from '@/lib/logger';
 import { generateAiDescription } from './ai-description';
 import { takeDeferredDescription, takeDeferredDescriptions } from './deferred-descriptions';
 import { queueDescription } from './description-queue';

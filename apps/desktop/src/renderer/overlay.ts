@@ -1,22 +1,15 @@
 import './overlay.css';
 
+interface LastStep {
+  index: number;
+  title: string;
+}
+
 interface Region {
   x: number;
   y: number;
   width: number;
   height: number;
-}
-
-declare global {
-  interface Window {
-    mimikOverlay: {
-      region(): Promise<Region>;
-      state(): Promise<string>;
-      setRegion(region: Region): void;
-      command(command: string): void;
-      onUpdate(handler: (state: string, region: Region) => void): void;
-    };
-  }
 }
 
 const MIN = { width: 240, height: 160 };
@@ -155,14 +148,25 @@ function controls(): void {
   document.body.className = 'controls';
   const dot = el('div', { id: 'dot' });
   const label = el('span', {}, 'Ready');
-  const status = el('div', { id: 'status' }, dot, label);
+  const counter = el('span', { id: 'counter' });
+  const status = el('div', { id: 'status' }, dot, label, counter);
+  const step = el('div', { id: 'step' });
+  document.body.append(step);
   const primary = el('button', { className: 'primary' });
   const secondary = el('button', {});
   const close = el('button', {}, 'Stop');
   document.body.append(status, secondary, primary, close);
 
-  const render = (state: string) => {
+  const render = (state: string, _region?: Region, last?: LastStep | null) => {
     document.body.setAttribute('data-state', state);
+    if (last) {
+      counter.textContent = `#${last.index}`;
+      step.textContent = last.title;
+      step.hidden = false;
+    } else {
+      counter.textContent = '';
+      step.hidden = true;
+    }
     label.textContent = state === 'recording' ? 'Recording' : state === 'paused' ? 'Paused' : 'Ready';
     primary.textContent = state === 'recording' ? 'Pause' : state === 'paused' ? 'Resume' : 'Start';
     primary.dataset.command = state === 'recording' ? 'pause' : state === 'paused' ? 'resume' : 'start';
@@ -176,7 +180,9 @@ function controls(): void {
   secondary.addEventListener('click', () => window.mimikOverlay.command('edit'));
   close.addEventListener('click', () => window.mimikOverlay.command(close.dataset.command ?? 'stop'));
 
-  window.mimikOverlay.state().then(render);
+  Promise.all([window.mimikOverlay.state(), window.mimikOverlay.last()]).then(([state, last]) =>
+    render(state, undefined, last),
+  );
   window.mimikOverlay.onUpdate(render);
 }
 

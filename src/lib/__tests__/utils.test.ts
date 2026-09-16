@@ -1,5 +1,5 @@
+import { extractDomain, getDomainInitial, getMostCommonDomain } from '@mimik/ui/lib/utils';
 import { describe, expect, it } from 'vitest';
-import { extractDomain, getDomainInitial, getMostCommonDomain } from '../utils';
 
 describe('extractDomain', () => {
   it('extracts hostname from a full URL', () => {

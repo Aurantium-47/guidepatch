@@ -1,8 +1,8 @@
+import { Tooltip, TooltipContent, TooltipTrigger } from '@mimik/ui/components/ui/tooltip';
 import { Check, Loader2, TriangleAlert, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { i18n } from '#imports';
 import type { PanelVoiceUpdate } from '@/lib/port';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/components/ui/tooltip';
 import { narratedKey, voiceErrorKey } from './voice-status';
 
 const CONFIRM_MS = 7000;

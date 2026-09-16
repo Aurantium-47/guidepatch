@@ -1,7 +1,23 @@
+import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
+import type { PluginOption } from 'vite';
+import { load } from 'js-yaml';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 
 const core = resolve(__dirname, '../../packages/core/src');
+const locales = resolve(__dirname, '../../src/locales');
+
+function yaml(): PluginOption {
+  return {
+    name: 'mimik-yaml',
+    transform(_code: string, id: string) {
+      if (!id.endsWith('.yml')) return null;
+      return { code: `export default ${JSON.stringify(load(readFileSync(id, 'utf8')))}`, map: null };
+    },
+  };
+}
 
 export default defineConfig({
   main: {
@@ -35,7 +51,15 @@ export default defineConfig({
   },
   renderer: {
     root: resolve(__dirname, 'src/renderer'),
-    resolve: { alias: { '@mimik/core': core, '@/core': core } },
+    plugins: [yaml(), react(), tailwindcss()],
+    resolve: {
+      alias: {
+        '@mimik/core': core,
+        '@mimik/ui': resolve(__dirname, '../../packages/ui/src'),
+        '@/core': core,
+        '@mimik/locales': locales,
+      },
+    },
     build: {
       outDir: resolve(__dirname, 'out/renderer'),
       emptyOutDir: true,

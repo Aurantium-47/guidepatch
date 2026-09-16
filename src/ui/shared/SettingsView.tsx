@@ -1,3 +1,26 @@
+import { PRESET_LABELS, type PresetKey } from '@mimik/core/blur/regexes';
+import { type AIApiKeys, keyFor, migrateApiKeys, withKeyFor } from '@mimik/core/capture/ai/keys';
+import {
+  AI_PROVIDERS,
+  type AIProviderKey,
+  CUSTOM_MODEL_VALUE,
+  DEFAULT_AI_PROVIDER,
+  isCustomBaseUrl,
+  isCustomModel,
+  providerOrDefault,
+} from '@mimik/core/capture/ai/models';
+import { AI_LANGUAGES, type AILanguageCode } from '@mimik/core/capture/ai/prompts';
+import { resolveVoiceApiKey } from '@mimik/core/capture/voice/api-key';
+import type { VoiceProvider } from '@mimik/core/capture/voice/transcribe';
+import { i18n } from '@mimik/core/env';
+import { type BrandLogo, defaultFooterLine, makeBrandLogo } from '@mimik/core/export/branding';
+import { DEFAULT_TARGET_COLOR, TARGET_COLORS } from '@mimik/core/screenshot/types';
+import { Button } from '@mimik/ui/components/ui/button';
+import { Input } from '@mimik/ui/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@mimik/ui/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@mimik/ui/components/ui/select';
+import { logger } from '@mimik/ui/lib/logger';
+import ColorPicker from '@mimik/ui/shared/ColorPicker';
 import {
   ArrowLeft,
   Bug,
@@ -16,30 +39,7 @@ import {
   TriangleAlert,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { i18n } from '#imports';
-import { PRESET_LABELS, type PresetKey } from '@/core/blur/regexes';
-import { type AIApiKeys, keyFor, migrateApiKeys, withKeyFor } from '@/core/capture/ai/keys';
-import {
-  AI_PROVIDERS,
-  type AIProviderKey,
-  CUSTOM_MODEL_VALUE,
-  DEFAULT_AI_PROVIDER,
-  isCustomBaseUrl,
-  isCustomModel,
-  providerOrDefault,
-} from '@/core/capture/ai/models';
-import { AI_LANGUAGES, type AILanguageCode } from '@/core/capture/ai/prompts';
-import { resolveVoiceApiKey } from '@/core/capture/voice/api-key';
-import type { VoiceProvider } from '@/core/capture/voice/transcribe';
-import { type BrandLogo, defaultFooterLine, makeBrandLogo } from '@/core/export/branding';
-import { DEFAULT_TARGET_COLOR, TARGET_COLORS } from '@/core/screenshot/types';
 import { localStorage } from '@/lib/browser-api';
-import { logger } from '@/lib/logger';
-import { Button } from '@/ui/components/ui/button';
-import { Input } from '@/ui/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/ui/components/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/components/ui/select';
-import ColorPicker from '@/ui/shared/ColorPicker';
 import { KeyStatusNote, KeyWarningNote, ModelList, SecretInput, useKeyCheck } from '@/ui/shared/key-check';
 import MicrophonePicker from '@/ui/shared/MicrophonePicker';
 import { changedSettings, type SettingsSnapshot } from '@/ui/shared/settings-autosave';

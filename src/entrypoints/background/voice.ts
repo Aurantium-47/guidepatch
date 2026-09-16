@@ -1,9 +1,9 @@
+import { logger } from '@mimik/ui/lib/logger';
 import { CaptureState } from '@/core/capture/machine';
 import { hasVoiceApiKey, VOICE_KEY_SETTINGS } from '@/core/capture/voice/api-key';
 import { narrationUpdates } from '@/core/capture/voice/narration-updates';
 import { applyNarrationToSteps, findExistingStepIds, getStepsForGuide } from '@/core/guides/service';
 import { localStorage, onMessage as onRuntimeMessage } from '@/lib/browser-api';
-import { logger } from '@/lib/logger';
 import {
   closeVoiceHost,
   closeVoiceHostIfIdle,

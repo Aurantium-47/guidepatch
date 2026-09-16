@@ -1,5 +1,5 @@
+import { logger } from '@mimik/ui/lib/logger';
 import { CaptureState } from '@/core/capture/machine';
-import { logger } from '@/lib/logger';
 import { sendMessage } from '@/lib/messaging';
 import { type CaptureHandle, startCapture } from './events/handlers';
 

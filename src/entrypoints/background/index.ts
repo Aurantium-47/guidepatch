@@ -1,4 +1,6 @@
 import '@/lib/core-env';
+import '@/lib/ui-env';
+import { logger } from '@mimik/ui/lib/logger';
 import { browser, defineBackground } from '#imports';
 import { rewriteSelection } from '@/core/capture/ai/rewrite';
 import { validateApiKey } from '@/core/capture/ai/validate';
@@ -21,7 +23,6 @@ import {
   toggleSidebar,
   updateTab,
 } from '@/lib/browser-api';
-import { logger } from '@/lib/logger';
 import { onMessage } from '@/lib/messaging';
 import { broadcastStateToPanel, setupPortListener } from '@/lib/port';
 import { recordUpdate } from '@/lib/update-notice';

@@ -13,14 +13,17 @@ const api = {
   capture: {
     region: (): Promise<Region> => ipcRenderer.invoke('mimik:capture:region'),
     edit: (): Promise<void> => ipcRenderer.invoke('mimik:capture:edit'),
+    arm: (): Promise<void> => ipcRenderer.invoke('mimik:capture:arm'),
     settings: {
       get: (): Promise<CaptureSettings> => ipcRenderer.invoke('mimik:capture:settings:get'),
       set: (patch: Partial<CaptureSettings>): Promise<CaptureSettings> =>
         ipcRenderer.invoke('mimik:capture:settings:set', patch),
     },
-    onCommand: (handler: (command: string, state: string, region: Region) => void): void => {
-      ipcRenderer.on('mimik:capture:command', (_event, command: string, state: string, region: Region) =>
-        handler(command, state, region),
+    onCommand: (handler: (command: string, state: string, region: Region, guideId: string | null) => void): void => {
+      ipcRenderer.on(
+        'mimik:capture:command',
+        (_event, command: string, state: string, region: Region, guideId: string | null) =>
+          handler(command, state, region, guideId),
       );
     },
   },

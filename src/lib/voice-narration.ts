@@ -1,3 +1,4 @@
+import { logger } from '@mimik/ui/lib/logger';
 import { resolveVoiceApiKey, VOICE_KEY_SETTINGS } from '@/core/capture/voice/api-key';
 import { detectSpeechByEnergy } from '@/core/capture/voice/energy-gate';
 import { runNarrationPipeline } from '@/core/capture/voice/pipeline';
@@ -5,7 +6,6 @@ import { buildStepWindows } from '@/core/capture/voice/step-windows';
 import { createTranscriber, type VoiceProvider } from '@/core/capture/voice/transcribe';
 import type { NarrationResult } from '@/core/capture/voice/types';
 import { localStorage } from './browser-api';
-import { logger } from './logger';
 import type { VoiceStepMark } from './voice-messages';
 
 export interface TranscriptionSettings {

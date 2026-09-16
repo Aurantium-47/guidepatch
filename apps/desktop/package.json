@@ -16,16 +16,24 @@
     "vm:windows": "bash scripts/windows-vm.sh"
   },
   "dependencies": {
-    "electron-updater": "^6.6.2",
     "@mimik/core": "workspace:*",
-    "uiohook-napi": "^1.5.5",
+    "@mimik/ui": "workspace:*",
+    "dexie": "^4.3.0",
+    "electron-updater": "^6.6.2",
     "get-windows": "^9.3.0",
-    "dexie": "^4.3.0"
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "uiohook-napi": "^1.5.5"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/js-yaml": "^4.0.9",
+    "@vitejs/plugin-react": "^4.3.4",
     "electron": "^33.2.1",
     "electron-builder": "^25.1.8",
     "electron-vite": "^2.3.0",
+    "js-yaml": "^4.1.0",
+    "tailwindcss": "^4.2.2",
     "vite": "^6.0.3"
   },
   "description": "Mimik desktop shell",

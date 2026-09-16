@@ -1,3 +1,4 @@
+import { logger } from '@mimik/ui/lib/logger';
 import { i18n } from '#imports';
 import { resolveAiKey } from '@/core/capture/ai/keys';
 import { generateGuideMeta } from '@/core/capture/ai/meta';
@@ -11,7 +12,6 @@ import {
   updateGuideTitle,
 } from '@/core/guides/service';
 import { localStorage } from '@/lib/browser-api';
-import { logger } from '@/lib/logger';
 import type { GenerateGuideDescriptionResponse, GuideDescriptionError } from '@/lib/messaging';
 import { drainDescriptions } from './description-queue';
 import { whenNarrationSettled } from './voice';

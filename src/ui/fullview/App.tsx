@@ -1,11 +1,11 @@
+import { TooltipProvider } from '@mimik/ui/components/ui/tooltip';
+import GuideContent from '@mimik/ui/fullview/GuideContent';
+import LibraryContent from '@mimik/ui/fullview/LibraryContent';
+import { useRoute } from '@mimik/ui/fullview/router';
+import { useFullview } from '@mimik/ui/stores/fullview';
 import { useEffect } from 'react';
-import { useFullview } from '@/stores/fullview';
-import { TooltipProvider } from '@/ui/components/ui/tooltip';
 import UpdateNotice from '@/ui/shared/UpdateNotice';
 import VoiceNotice from './components/VoiceNotice';
-import GuideContent from './GuideContent';
-import LibraryContent from './LibraryContent';
-import { useRoute } from './router';
 import SearchModal from './SearchModal';
 import TopNav from './TopNav';
 

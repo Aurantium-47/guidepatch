@@ -345,11 +345,23 @@ does not answer. Whether a real grab works is `check:capture`'s question, not th
 
 `pnpm --filter @mimik/desktop check:pipeline` captures two clicks into a throwaway guide, then
 asserts the steps landed on the guide, the screenshot is cropped to the region, the description came
-from the shared heuristic, and HTML, Markdown, PDF and DOCX all export non-empty.
+from the shared heuristic, and HTML, Markdown, PDF and DOCX all export non-empty. It then loads the
+real `index.html` and asserts that window answers a capture request and navigates to the finished
+guide, because the checks otherwise run against their own renderer and never exercise the entry
+point the user actually gets.
 
-Descriptions currently render as raw message keys on desktop, because the desktop `CoreEnv` returns
-keys verbatim. Exports are structurally correct and read badly until the desktop has a real message
-catalogue.
+The renderer answers those requests from `capture-host.ts`, imported for its side effect by
+`main.tsx`. Nothing else registers the sink, so dropping that import silently costs every capture a
+fifteen second timeout and no visible error.
+
+Stopping a recording names the guide before the window is told, so the view opens on a titled guide
+rather than the placeholder the extension fills in with AI. Desktop has no AI title, so the name
+comes from the recorded application, or a generic one where no application was identified. Without
+it the guide screen waits forever on a title that is never written.
+
+Step descriptions read as bare actions until the accessibility tree lands. A screen capture knows
+where the click was and which application owned it, so `buildFallbackDescription` has no control
+name to work with and every step reads the same.
 
 ## Capture Settings
 
@@ -389,7 +401,9 @@ win32 binary matches the Electron ABI during a cross-build, and `node-gyp` refus
 so `electron-builder --win` fails before it packages anything. Windows has to build its own copy.
 
 The script creates the machine on first run through `quickemu`, fetches the VirtIO drivers, stages the
-current commit with `git archive`, serves it on loopback and boots. QEMU user-mode networking always
+working tree, uncommitted and untracked files included, serves it on loopback and boots. Staging the
+working tree rather than a commit is what makes the documented loop true, since otherwise the guest
+silently runs the last commit and a fix appears not to work. QEMU user-mode networking always
 maps the host to `10.0.2.2`, so the guest pulls the source over plain HTTP and needs no shared folder,
 no samba and no SPICE webdav. Inside Windows one line installs Node and pnpm through `winget`,
 unpacks the source to `C:\mimik`, installs and launches. Iterating is: change code, re-run the

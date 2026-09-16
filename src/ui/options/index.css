@@ -1,4 +1,4 @@
-@import "../global.css";
+@import "../../../packages/ui/src/global.css";
 
 html, body, #root {
   margin: 0;

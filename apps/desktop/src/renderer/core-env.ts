@@ -1,8 +1,10 @@
 import { configureCore } from '@mimik/core/env';
 import type { Settings, SettingsKey } from '@mimik/core/guides/types';
+import { type Messages, translate } from '@mimik/core/i18n/translate';
+import en from '@mimik/locales/en.yml';
 
 configureCore({
-  t: (key) => key,
+  t: (key, substitutions) => translate(en as Messages, key, substitutions),
   assetUrl: (path) => new URL(path, document.baseURI).href,
   storage: {
     get: async <K extends SettingsKey>(keys: readonly K[]) => {
