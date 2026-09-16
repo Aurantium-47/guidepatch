@@ -30,6 +30,11 @@ window.mimik.onRequest('mimik:check:cleanup', async (payload) => {
   return true;
 });
 
+window.mimik.onRequest('mimik:check:title', async (payload) => {
+  const found = await getGuide(payload as string);
+  return found?.guide.title ?? null;
+});
+
 window.mimik.onRequest('mimik:check:verify', async (payload) => {
   const guideId = payload as string;
   const results: CheckResult[] = [];

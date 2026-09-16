@@ -115,6 +115,54 @@ app.whenReady().then(async () => {
 
   await ask(win.webContents, 'mimik:check:cleanup', [guideId, activeGuide], 30_000);
 
+  const app_ = new BrowserWindow({
+    show: false,
+    webPreferences: { preload: join(__dirname, '../preload/index.cjs'), contextIsolation: true },
+  });
+  await app_.loadFile(join(__dirname, '../renderer/index.html'));
+  let wired = 'no reply';
+  try {
+    const id = await ask<string>(app_.webContents, 'mimik:capture:startGuide', undefined, 20_000);
+    wired = typeof id === 'string' && id.length > 0 ? id : `unexpected reply ${JSON.stringify(id)}`;
+    await ask(app_.webContents, 'mimik:check:cleanup', [id], 20_000).catch(() => undefined);
+  } catch (error) {
+    wired = error instanceof Error ? error.message : String(error);
+  }
+  results.push({
+    name: 'the app window answers capture requests',
+    ok: /^[0-9a-f-]{36}$/.test(wired),
+    detail: wired,
+  });
+
+  let titled = 'no reply';
+  try {
+    const id = await ask<string>(app_.webContents, 'mimik:capture:startGuide', undefined, 20_000);
+    await ask(app_.webContents, 'mimik:capture:finishGuide', id, 20_000);
+    titled = (await ask<string | null>(win.webContents, 'mimik:check:title', id, 20_000)) ?? 'no guide';
+    await ask(app_.webContents, 'mimik:check:cleanup', [id], 20_000).catch(() => undefined);
+  } catch (error) {
+    titled = error instanceof Error ? error.message : String(error);
+  }
+  results.push({
+    name: 'stopping names the guide',
+    ok: titled.length > 0 && titled !== 'Untitled Guide' && !titled.includes('untitledGuide'),
+    detail: titled,
+  });
+
+  const stopped = 'bc4e4a1e-0000-4000-8000-000000000001';
+  app_.webContents.send('mimik:capture:command', 'stop', 'idle', region, stopped);
+  let shown = 'no navigation';
+  for (let i = 0; i < 40 && !shown.startsWith('#guide/'); i++) {
+    await new Promise((r) => setTimeout(r, 50));
+    shown = await app_.webContents.executeJavaScript('window.location.hash');
+  }
+  app_.destroy();
+  results.push({
+    name: 'stopping opens the new guide',
+    ok: shown === `#guide/${stopped}`,
+    detail: shown || 'no navigation',
+  });
+
   process.stdout.write(
     `capture area ${region.width} × ${region.height} on a ${display.bounds.width} × ${display.bounds.height} display at ${display.scaleFactor}x\n\n`,
   );
