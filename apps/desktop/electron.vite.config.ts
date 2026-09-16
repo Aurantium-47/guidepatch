@@ -31,7 +31,6 @@ export default defineConfig({
           'check-storage': resolve(__dirname, 'scripts/check-storage.ts'),
           'check-overlay': resolve(__dirname, 'scripts/check-overlay.ts'),
           'check-pipeline': resolve(__dirname, 'scripts/check-pipeline.ts'),
-          'shot-ui': resolve(__dirname, 'scripts/shot-ui.ts'),
         },
         output: { entryFileNames: '[name].js', chunkFileNames: '[name].js' },
       },
