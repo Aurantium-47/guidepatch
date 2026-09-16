@@ -108,14 +108,21 @@ function createTray(): void {
   refreshTrayMenu();
 }
 
-function broadcastOverlay(command: OverlayCommand): void {
-  mainWindow?.webContents.send('mimik:capture:command', command, overlay?.state, overlay?.region, guideId);
+function broadcastOverlay(command: OverlayCommand, id: string | null): void {
+  mainWindow?.webContents.send('mimik:capture:command', command, overlay?.state, overlay?.region, id);
 }
 
 async function onOverlayCommand(command: OverlayCommand): Promise<void> {
+  let finished: string | null = null;
   if (command === 'start' && !guideId) {
     stepCount = 0;
-    guideId = await ask<string>(mainWindow?.webContents ?? null, 'mimik:capture:startGuide');
+    try {
+      guideId = await ask<string>(mainWindow?.webContents ?? null, 'mimik:capture:startGuide');
+    } catch (error) {
+      overlay?.hide();
+      dialog.showErrorBox('Mimik cannot record', error instanceof Error ? error.message : String(error));
+      return;
+    }
     const started = await recorder?.start();
     if (started && !started.ok) {
       guideId = null;
@@ -130,9 +137,14 @@ async function onOverlayCommand(command: OverlayCommand): Promise<void> {
   } else if (command === 'stop' || command === 'cancel') {
     recorder?.stop();
     await recorder?.drain();
+    if (command === 'stop' && stepCount > 0) finished = guideId;
+    if (finished) {
+      await ask(mainWindow?.webContents ?? null, 'mimik:capture:finishGuide', finished).catch(() => undefined);
+    }
     guideId = null;
   }
-  broadcastOverlay(command);
+  broadcastOverlay(command, finished ?? guideId);
+  if (finished) showWindow();
 }
 
 let isQuitting = false;
