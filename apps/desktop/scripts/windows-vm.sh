@@ -41,8 +41,10 @@ EOF
   exit 1
 fi
 
-echo "==> staging $(git -C "$REPO" rev-parse --short HEAD)"
-git -C "$REPO" archive --format=tar.gz -o "$STAGE/mimik-src.tar.gz" HEAD
+echo "==> staging the working tree at $(git -C "$REPO" rev-parse --short HEAD)"
+git -C "$REPO" ls-files -z --cached --others --exclude-standard |
+  (cd "$REPO" && while IFS= read -r -d '' f; do [ -f "$f" ] && printf '%s\0' "$f"; done) |
+  tar -czf "$STAGE/mimik-src.tar.gz" -C "$REPO" --null -T -
 sed "s|__PORT__|$PORT|g" "$HERE/windows-vm-setup.ps1" > "$STAGE/setup.ps1"
 
 python3 -m http.server "$PORT" --bind 127.0.0.1 --directory "$STAGE" >/dev/null 2>&1 &
