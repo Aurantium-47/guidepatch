@@ -19,6 +19,15 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
+  useEffect(() => {
+    window.mimik.capture.onCommand((command, _state, _region, id) => {
+      if (command === 'stop' && id) {
+        setSettingsOpen(false);
+        window.location.hash = `#guide/${id}`;
+      }
+    });
+  }, []);
+
   return (
     <TooltipProvider>
       <div className="min-h-screen flex flex-col bg-background">
