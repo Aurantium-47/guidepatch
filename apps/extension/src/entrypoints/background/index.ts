@@ -23,6 +23,7 @@ import { sendMessageToTab } from '@/lib/browser-api/send-message-to-tab';
 import { setSidePanelBehavior } from '@/lib/browser-api/set-side-panel-behavior';
 import { toggleSidebar } from '@/lib/browser-api/toggle-sidebar';
 import { updateTab } from '@/lib/browser-api/update-tab';
+import { recordInstall } from '@/lib/letter-notice/record-install';
 import { onMessage } from '@/lib/messaging';
 import { broadcastStateToPanel } from '@/lib/port/broadcast-state-to-panel';
 import { setupPortListener } from '@/lib/port/setup-port-listener';
@@ -72,6 +73,7 @@ export default defineBackground(() => {
 
   browser.runtime.onInstalled.addListener(async (details) => {
     await recordUpdate(details.reason);
+    await recordInstall(details.reason);
     if (details.reason !== 'install') return;
     if (import.meta.env.BROWSER === 'firefox') {
       try {

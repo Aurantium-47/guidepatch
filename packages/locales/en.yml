@@ -587,6 +587,7 @@ onboarding:
   blurTitle: "Smart blur"
   openMimik: Open Mimik
   letterHello: "One more thing 👋"
+  letterNote: "A note from the team 👋"
   letterThanks: "We have to say it: $1 Over the last couple of weeks, Mimik's GitHub stars have exploded, and that's all because of you. You've been sharing it with friends, teammates and communities, and we're blown away."
   letterThankYou: "thank you."
   letterWorld: "The best part of building Mimik has been seeing how people all over the world use it. We hope it keeps saving you time and money and keeps your data where it belongs: with you. Got an idea, a feature request or feedback? $1. We read every single one."

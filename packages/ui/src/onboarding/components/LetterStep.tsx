@@ -16,7 +16,15 @@ const ASKS = [
   ['💬', 'onboarding.letterAskFriend'],
 ] as const;
 
-export function LetterStep({ onFinish }: { onFinish: () => void }) {
+export function LetterStep({
+  onFinish,
+  heading,
+  finishLabel,
+}: {
+  onFinish: () => void;
+  heading?: string;
+  finishLabel?: string;
+}) {
   const withSlot = (key: string, slot: ReactNode) => {
     const [before, after] = i18n.t(key, [SLOT]).split(SLOT);
     return (
@@ -39,7 +47,9 @@ export function LetterStep({ onFinish }: { onFinish: () => void }) {
         <div className="mx-auto">
           <MascotIcon size={84} />
         </div>
-        <h1 className="text-center text-[23px] font-bold text-foreground">{i18n.t('onboarding.letterHello')}</h1>
+        <h1 className="text-center text-[23px] font-bold text-foreground">
+          {heading ?? i18n.t('onboarding.letterHello')}
+        </h1>
         <p className={PARAGRAPH}>
           {withSlot(
             'onboarding.letterThanks',
@@ -96,7 +106,7 @@ export function LetterStep({ onFinish }: { onFinish: () => void }) {
           </span>
         </p>
       </section>
-      <StepNav onNext={onFinish} nextLabel={i18n.t('onboarding.openMimik')} />
+      <StepNav onNext={onFinish} nextLabel={finishLabel ?? i18n.t('onboarding.openMimik')} />
     </>
   );
 }

@@ -41,6 +41,7 @@ export { AppFrame } from './navigation/components/AppFrame';
 export { useRoute } from './navigation/hooks/use-route';
 export { navigate } from './navigation/lib/navigate';
 export { DemoCursor } from './onboarding/components/DemoCursor';
+export { LetterStep } from './onboarding/components/LetterStep';
 export { OnboardingFlow } from './onboarding/components/OnboardingFlow';
 export { OnboardingRow } from './onboarding/components/OnboardingRow';
 export { FinishButton } from './recording/components/FinishButton';

@@ -5,7 +5,9 @@ import { browser } from '#imports';
 import { startRecordingInTab } from '@/capture/start-recording-in-tab';
 import { openSidebar } from '@/lib/browser-api/open-sidebar';
 import { sendMessage } from '@/lib/messaging';
+import { useLetterNotice } from '@/ui/shared/hooks/use-letter-notice';
 import { useUpdateNotice } from '@/ui/shared/hooks/use-update-notice';
+import { LetterDialog } from '@/ui/shared/LetterDialog';
 import { BackgroundVoiceNotice } from './components/BackgroundVoiceNotice';
 import { CaptureTabDialog } from './components/CaptureTabDialog';
 
@@ -13,6 +15,7 @@ export function FullViewApp() {
   const route = useRoute();
   const [pendingCapture, setPendingCapture] = useState<{ insert?: CaptureInsert } | null>(null);
   const updateNotice = useUpdateNotice();
+  const letterNotice = useLetterNotice();
 
   return (
     <TooltipProvider>
@@ -24,6 +27,7 @@ export function FullViewApp() {
       >
         <SearchModal />
         <UpdateNotice {...updateNotice} className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50" />
+        <LetterDialog {...letterNotice} />
 
         {route.page === 'library' && (
           <main className="flex-1 flex flex-col p-8">
