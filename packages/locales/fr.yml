@@ -587,6 +587,7 @@ onboarding:
   blurTitle: Flou intelligent
   openMimik: Ouvrir Mimik
   letterHello: "Encore une chose 👋"
+  letterNote: "Un mot de l'équipe 👋"
   letterThanks: "Il fallait qu'on vous le dise : $1 Ces dernières semaines, les étoiles GitHub de Mimik ont explosé, et c'est entièrement grâce à vous. Vous l'avez partagé avec vos amis, vos collègues et vos communautés, et nous n'en revenons pas."
   letterThankYou: "merci."
   letterWorld: "Le plus beau dans l'aventure Mimik, c'est de voir comment des gens du monde entier l'utilisent. Nous espérons qu'il continuera à vous faire gagner du temps et de l'argent, et à garder vos données là où elles doivent être : chez vous. Une idée, une demande de fonctionnalité ou un retour ? $1. Nous lisons absolument tout."

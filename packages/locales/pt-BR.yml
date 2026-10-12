@@ -587,6 +587,7 @@ onboarding:
   blurTitle: Desfoque inteligente
   openMimik: "Abrir o Mimik"
   letterHello: "Mais uma coisa 👋"
+  letterNote: "Um recado do time 👋"
   letterThanks: "A gente precisa dizer: $1 Nas últimas semanas, as estrelas do Mimik no GitHub explodiram, e é tudo graças a vocês. Vocês compartilharam o Mimik com amigos, colegas e comunidades, e a gente ficou de queixo caído."
   letterThankYou: "obrigado."
   letterWorld: "A melhor parte de criar o Mimik tem sido ver como pessoas do mundo todo usam ele. Esperamos que ele continue economizando tempo e dinheiro para vocês e mantendo seus dados onde eles devem ficar: com vocês. Tem uma ideia, um pedido de recurso ou feedback? $1. A gente lê cada mensagem."

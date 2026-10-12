@@ -587,6 +587,7 @@ onboarding:
   blurTitle: 智能模糊
   openMimik: 打开 Mimik
   letterHello: "还有一件事 👋"
+  letterNote: "来自团队的一封信 👋"
   letterThanks: "有句话我们一定要说：$1过去几周，Mimik 在 GitHub 上的星标数一路暴涨，这全靠你们。你们把它分享给朋友、同事和各个社区，我们真的又惊又喜。"
   letterThankYou: "谢谢你们！"
   letterWorld: "打造 Mimik 最开心的事，就是看到世界各地的人都在用它。希望它继续帮你们省时省钱，也让你们的数据留在该在的地方：你们自己手里。有想法、功能需求或反馈？$1，每一条我们都会认真看。"
