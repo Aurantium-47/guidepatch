@@ -1,7 +1,37 @@
 name: Desktop macOS
 
 on:
+  pull_request:
+    branches:
+      - desktop
+      - dev
+      - main
+    paths:
+      - apps/desktop/**
+      - apps/extension/public/**
+      - packages/**
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - package.json
+      - .github/workflows/desktop-macos.yml
+  push:
+    branches:
+      - desktop
+      - dev
+      - main
+    paths:
+      - apps/desktop/**
+      - apps/extension/public/**
+      - packages/**
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - package.json
+      - .github/workflows/desktop-macos.yml
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
