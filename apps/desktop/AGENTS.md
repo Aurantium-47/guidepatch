@@ -60,5 +60,8 @@ exactly as the extension does. The preload exposes `window.mimik` with context i
 
 `check:storage`, `check:pipeline`, `check:overlay` and `check:capture` build the app and drive
 real windows. Run them under `xvfb-run` on Linux. `check:pipeline` covers capture, cropping, every
-exporter and the `.mimik` round trip. CI runs them on Linux and Windows (`desktop.yml`) and on
-demand on macOS (`desktop-macos.yml`).
+exporter and the `.mimik` round trip. CI runs them on Linux (`desktop.yml`), and on Windows and
+macOS (`desktop-windows.yml`, `desktop-macos.yml`) when desktop or shared code changes.
+
+Only `desktop-windows-release.yml` signs, through `electron-builder.signed.yml`. Every other build
+is unsigned, so the base config never gets signing options.
