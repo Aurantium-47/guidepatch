@@ -593,7 +593,7 @@ onboarding:
   letterWorld: "Le plus beau dans l'aventure Mimik, c'est de voir comment des gens du monde entier l'utilisent. Nous espérons qu'il continuera à vous faire gagner du temps et de l'argent, et à garder vos données là où elles doivent être : chez vous. Une idée, une demande de fonctionnalité ou un retour ? $1. Nous lisons absolument tout."
   letterSayHi: "Venez nous dire bonjour sur GitHub"
   letterNewsTitle: "🚀 Grande nouvelle : Mimik Desktop est là !"
-  letterNewsBody: "Tout ce que vous aimez dans l'extension Mimik, désormais directement sur votre ordinateur. Disponible dès maintenant pour Mac et Windows."
+  letterNewsBody: "Tout ce que vous aimez dans l'extension Mimik, désormais directement sur votre ordinateur. Disponible dès maintenant pour Windows, et bientôt pour Mac."
   letterNewsAction: "Télécharger Mimik Desktop"
   letterPromiseTitle: "D'abord, une promesse"
   letterPromise: "Mimik restera toujours gratuit et sous licence MIT. Pas de piège ni d'accès payant plus tard. C'est notre promesse, à vous et à la formidable communauté qui grandit autour du projet."
