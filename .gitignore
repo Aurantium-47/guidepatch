@@ -10,3 +10,5 @@ docs/
 mockups/
 .worktrees/
 public/transformers/
+apps/*/out/
+apps/*/dist/

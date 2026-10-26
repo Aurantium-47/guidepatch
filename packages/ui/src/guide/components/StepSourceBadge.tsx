@@ -1,0 +1,23 @@
+import { i18n } from '@mimik/core/env';
+import { STEP_SOURCE_LABELS } from '@mimik/core/guides/step-source-labels';
+import type { DescriptionSource } from '@mimik/core/guides/types';
+
+const STYLES: Record<DescriptionSource, string> = {
+  ai: 'bg-secondary text-accent',
+  narration: 'bg-success/10 text-success',
+  heuristic: 'bg-primary text-primary-foreground',
+  manual: 'border border-border text-muted-foreground',
+};
+
+export function StepSourceBadge({ source }: { source: DescriptionSource | undefined }) {
+  if (!source) return null;
+
+  return (
+    <span
+      className={`inline-block leading-none text-[9px] font-bold uppercase tracking-wide rounded px-1 py-[2px] shrink-0 ${STYLES[source]}`}
+      title={i18n.t('stepSource.hint')}
+    >
+      {i18n.t(STEP_SOURCE_LABELS[source])}
+    </span>
+  );
+}

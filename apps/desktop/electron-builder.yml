@@ -1,0 +1,60 @@
+appId: io.westpoint.mimik
+productName: Mimik
+executableName: Mimik
+extraMetadata:
+  name: mimik
+  productName: Mimik
+npmRebuild: false
+afterPack: scripts/flip-fuses.cjs
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - out/**
+  - "!out/THIRD_PARTY_NOTICES.txt"
+  - package.json
+extraFiles:
+  - from: out/THIRD_PARTY_NOTICES.txt
+    to: THIRD_PARTY_NOTICES.txt
+  - from: ../../LICENSE
+    to: LICENSE.txt
+extraResources:
+  - from: resources
+    to: .
+fileAssociations:
+  - ext: mimik
+    name: Mimik guide
+    description: Mimik guide
+    role: Editor
+    mimeType: application/x-mimik
+publish:
+  provider: github
+  owner: westpoint-io
+  repo: mimik
+mac:
+  category: public.app-category.productivity
+  artifactName: ${productName}-${version}-${arch}.${ext}
+  target:
+    - dmg
+    - zip
+  entitlements: resources/entitlements.mac.plist
+  entitlementsInherit: resources/entitlements.mac.plist
+  extendInfo:
+    NSMicrophoneUsageDescription: Mimik listens while you narrate a recording, when you turn narration on.
+win:
+  target:
+    - nsis
+nsis:
+  artifactName: ${productName}-${version}.${ext}
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  runAfterFinish: true
+linux:
+  executableName: mimik
+  category: Utility
+  target:
+    - AppImage
+    - deb
