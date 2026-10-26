@@ -12,6 +12,9 @@ updates:
     multi-ecosystem-group: dependencies
     cooldown:
       default-days: 7
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /
@@ -19,6 +22,9 @@ updates:
     multi-ecosystem-group: dependencies
     cooldown:
       default-days: 7
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: cargo
     directory: /packages/capture-native
@@ -26,3 +32,6 @@ updates:
     multi-ecosystem-group: dependencies
     cooldown:
       default-days: 7
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
