@@ -3,6 +3,13 @@ name: Desktop Windows release
 on:
   workflow_dispatch:
   workflow_call:
+    secrets:
+      AZURE_TENANT_ID:
+        required: false
+      AZURE_CLIENT_ID:
+        required: false
+      AZURE_CLIENT_SECRET:
+        required: false
 
 concurrency:
   group: desktop-windows-release-${{ github.ref }}
