@@ -1,0 +1,14 @@
+export const TabMessage = {
+  PING: 'PING',
+  ATTACH_CAPTURE: 'ATTACH_CAPTURE',
+  DETACH_CAPTURE: 'DETACH_CAPTURE',
+  GET_ROUTE: 'GET_ROUTE',
+  URL_CHANGED: 'URL_CHANGED',
+  SHOW_NOTIFICATION: 'SHOW_NOTIFICATION',
+  GUIDEME_STOP: 'GUIDEME_STOP',
+  START_BLUR: 'START_BLUR',
+  DISMISS_BLUR: 'DISMISS_BLUR',
+  CLEAR_BLUR: 'CLEAR_BLUR',
+} as const;
+
+export type TabMessageType = (typeof TabMessage)[keyof typeof TabMessage];
