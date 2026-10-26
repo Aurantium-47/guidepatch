@@ -43,6 +43,10 @@ jobs:
     needs: release-pr
     if: needs.release-pr.outputs.desktop == 'true'
     uses: $/.github/workflows/desktop-windows-release.yml
+    secrets:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
 
   desktop:
     name: Desktop installers
