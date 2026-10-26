@@ -13,18 +13,6 @@ on:
       - pnpm-workspace.yaml
       - package.json
       - .github/workflows/desktop-macos.yml
-  push:
-    branches:
-      - dev
-      - main
-    paths:
-      - apps/desktop/**
-      - apps/extension/public/**
-      - packages/**
-      - pnpm-lock.yaml
-      - pnpm-workspace.yaml
-      - package.json
-      - .github/workflows/desktop-macos.yml
   workflow_dispatch:
 
 concurrency:
