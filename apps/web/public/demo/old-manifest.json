@@ -1,0 +1,192 @@
+{
+  "version": 1,
+  "exportedAt": 1793198166185,
+  "guide": {
+    "title": "North Studio · Member onboarding",
+    "description": "Owned demo application. An edited team playbook with a manually authored caution. Synthetic names, actual browser screenshots.",
+    "createdAt": 1793198166185
+  },
+  "sourceDomain": "fieldwork.example.test",
+  "redacted": {
+    "screenshots": false,
+    "inputValues": true,
+    "urls": "path"
+  },
+  "steps": [
+    {
+      "id": "old-open",
+      "index": 0,
+      "description": "Open the Members page.",
+      "action": "navigate",
+      "url": "https://fieldwork.example.test/members",
+      "timestamp": 1793198165535,
+      "descriptionSource": "heuristic"
+    },
+    {
+      "id": "old-editor-note",
+      "index": 1,
+      "description": "Before inviting anyone, confirm that you are in North Studio, not a client workspace. This playbook note must stay when the interface changes.",
+      "action": "note",
+      "url": "https://fieldwork.example.test/members",
+      "timestamp": 1793198165722,
+      "descriptionSource": "manual",
+      "blockType": "callout",
+      "calloutVariant": "warning"
+    },
+    {
+      "id": "old-invite",
+      "index": 2,
+      "description": "Click Invite member. Confirm the current workspace; never assign Owner to a guest.",
+      "action": "click",
+      "url": "https://fieldwork.example.test/members",
+      "timestamp": 1793198165773,
+      "descriptionSource": "manual",
+      "elementMeta": {
+        "tag": "button",
+        "cssSelector": "#invite",
+        "textContent": "Invite member",
+        "ariaLabel": "Invite member",
+        "placeholder": null,
+        "altText": null,
+        "name": null,
+        "role": "button",
+        "rect": {
+          "x": 1007.0625,
+          "y": 138.25,
+          "width": 138.9375,
+          "height": 42
+        },
+        "devicePixelRatio": 1,
+        "dataTestId": "invite"
+      }
+    },
+    {
+      "id": "old-email",
+      "index": 3,
+      "description": "Enter the teammate’s email address.",
+      "action": "input",
+      "url": "https://fieldwork.example.test/members",
+      "timestamp": 1793198165927,
+      "descriptionSource": "heuristic",
+      "elementMeta": {
+        "tag": "button",
+        "cssSelector": "#email",
+        "textContent": "Email address",
+        "ariaLabel": "Email address",
+        "placeholder": null,
+        "altText": null,
+        "name": null,
+        "role": "button",
+        "rect": {
+          "x": 401,
+          "y": 377.25,
+          "width": 398,
+          "height": 47
+        },
+        "devicePixelRatio": 1,
+        "dataTestId": "email"
+      }
+    },
+    {
+      "id": "old-send",
+      "index": 4,
+      "description": "Click Send invite.",
+      "action": "click",
+      "url": "https://fieldwork.example.test/members",
+      "timestamp": 1793198166063,
+      "descriptionSource": "heuristic",
+      "elementMeta": {
+        "tag": "button",
+        "cssSelector": "#send",
+        "textContent": "Send invite",
+        "ariaLabel": "Send invite",
+        "placeholder": null,
+        "altText": null,
+        "name": null,
+        "role": "button",
+        "rect": {
+          "x": 680.3125,
+          "y": 454.25,
+          "width": 118.6875,
+          "height": 42
+        },
+        "devicePixelRatio": 1,
+        "dataTestId": "send"
+      }
+    },
+    {
+      "id": "old-success",
+      "index": 5,
+      "description": "Check that Invitation sent is displayed.",
+      "action": "note",
+      "url": "https://fieldwork.example.test/members",
+      "timestamp": 1793198166147,
+      "descriptionSource": "heuristic"
+    }
+  ],
+  "screenshots": [
+    {
+      "id": "shot-old-open",
+      "stepId": "old-open",
+      "file": "screenshots/old-open.png",
+      "mimeType": "image/png",
+      "width": 1200,
+      "height": 760,
+      "pixelRatio": 1
+    },
+    {
+      "id": "shot-old-invite",
+      "stepId": "old-invite",
+      "file": "screenshots/old-invite.png",
+      "mimeType": "image/png",
+      "width": 1200,
+      "height": 760,
+      "bounds": {
+        "x": 1007.0625,
+        "y": 138.25,
+        "width": 138.9375,
+        "height": 42
+      },
+      "pixelRatio": 1
+    },
+    {
+      "id": "shot-old-email",
+      "stepId": "old-email",
+      "file": "screenshots/old-email.png",
+      "mimeType": "image/png",
+      "width": 1200,
+      "height": 760,
+      "bounds": {
+        "x": 401,
+        "y": 377.25,
+        "width": 398,
+        "height": 47
+      },
+      "pixelRatio": 1
+    },
+    {
+      "id": "shot-old-send",
+      "stepId": "old-send",
+      "file": "screenshots/old-send.png",
+      "mimeType": "image/png",
+      "width": 1200,
+      "height": 760,
+      "bounds": {
+        "x": 680.3125,
+        "y": 454.25,
+        "width": 118.6875,
+        "height": 42
+      },
+      "pixelRatio": 1
+    },
+    {
+      "id": "shot-old-success",
+      "stepId": "old-success",
+      "file": "screenshots/old-success.png",
+      "mimeType": "image/png",
+      "width": 1200,
+      "height": 760,
+      "pixelRatio": 1
+    }
+  ]
+}

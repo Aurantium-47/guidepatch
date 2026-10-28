@@ -1,348 +1,99 @@
-<div align="center"><a name="readme-top"></a>
+# GuidePatch
 
-<img src="apps/extension/public/mascot.svg" width="140" height="140" alt="Mimik mascot" />
+**Keep the work in your guides. Update the steps that changed.**
 
-# Mimik
+GuidePatch maintains browser workflow guides that already contain edited explanations, warnings and chapters worth keeping. Import two independently recorded `.mimik` files, inspect old/new screenshots, correct their correspondence, review the changes, and export a maintained tutorial.
 
-**English** · [Español](.github/readme/README.es.md) · [Português (BR)](.github/readme/README.pt-BR.md) · [Français](.github/readme/README.fr.md) · [简体中文](.github/readme/README.zh-CN.md)
+## Implemented workflow
 
-**Auto-capture any browser workflow into a step-by-step guide. No account, no cloud, no tracking.**
+- Normal web workspace; reviewers do not need to install an extension.
+- Mimik v1 bundle import with bounded input and duplicate/missing-reference checks.
+- Unique exact-text matches with screenshot changes kept visible for human review.
+- Manual matching/unlinking, accept/keep decisions, editable wording, original/latest ordering and explicit note anchors.
+- Old manual/narrated wording stays by default when a newer action/screenshot is adopted; old/new/custom wording can be selected.
+- Undo and automatic session recovery in the same browser.
+- Preview navigation/focusing, self-contained HTML walkthrough, editable Mimik export and JSON audit record.
+- Server-only Nebius/NVIDIA adapter with validated references, persistent cost reservations, a common free-credit allowance, expiry cutoff and access controls.
 
-Click record, do the thing, get a polished guide with annotated screenshots. Narrate it as you go, edit it after, then replay or export.
+**Live status:** the adapter is implemented and mock-tested. No real Nebius call has yet been verified. Local review works independently; hackathon runtime compliance remains pending.
 
-<!-- SHIELD GROUP -->
+## Quick start
 
-[![License][license-shield]][license-link]
-[![Manifest V3][mv3-shield]][mv3-link]
-[![100% Local][local-shield]][local-link]
-[![No Account][no-account-shield]][no-account-link]
-<br/>
-[![Stars][star-shield]][star-link]
-[![Contributors][contributors-shield]][contributors-link]
-![Last Commit][last-commit-shield]
-[![Issues][issues-shield]][issues-link]
+Node.js 24+ and pnpm are required. Tested with Node 24.15.0 and pnpm 11.25.0.
 
-</div>
+```sh
+pnpm install --filter @guidepatch/web... --ignore-scripts
+pnpm --filter @guidepatch/web build
+npm --prefix apps/server start
+```
 
-<details>
-<summary><kbd>Table of contents</kbd></summary>
+Open **http://127.0.0.1:4318/**. Choose **Try the invitation workflow** or import your own pair. The sample uses an owned application, synthetic names and real browser screenshots; its archives are script-assembled using the v1 schema, not presented as extension capture.
 
-#### TOC
+For development, run the server plus `pnpm --filter @guidepatch/web dev`; Vite uses 4317 and proxies `/api` to 4318.
 
-- [📺 Demo](#-demo)
-- [👋 Getting Started](#-getting-started)
-- [✨ Features](#-features)
-  - [🔒 Smart blur](#-smart-blur)
-  - [🧠 AI descriptions (optional)](#-ai-descriptions-optional)
-  - [▶️ Guide Me replay](#️-guide-me-replay)
-  - [🎙️ Voice narration (optional)](#️-voice-narration-optional)
-  - [✏️ Guide editor](#️-guide-editor)
-  - [🔊 Video voice-over (optional)](#-video-voice-over-optional)
-  - [📤 Multi-format export](#-multi-format-export)
-  - [📦 Share a guide](#-share-a-guide)
-- [🔐 Privacy & storage](#-privacy--storage)
-- [🤝 Contributing](#-contributing)
-- [⭐ Star History](#-star-history)
-- [📜 License](#-license)
+## Record and review
 
-<br/>
+Use [Mimik](https://github.com/westpoint-io/mimik) to record old/new workflows and export editable `.mimik` files. Optional upstream AI/voice features are separately billed and are not required by GuidePatch.
 
-</details>
+1. Import both versions and confirm their titles.
+2. Correct unmatched/renamed steps manually, or request live semantic alignment when enabled.
+3. Inspect the screenshots and wording. Clicking Save is not proof of success.
+4. Keep useful explanations and review note anchors when changing the step order.
+5. Resolve every pending decision, then export. Original files are not overwritten.
 
-## 📺 Demo
+## Real Nebius alignment
 
-https://github.com/user-attachments/assets/f71f5898-ee5e-4b22-b9fd-d5b45af73459
+Only the server reads the provider key. Copy `apps/server/.env.example` to private `apps/server/.env` after checking actual applicable free credits, amount and expiry. These files and the ledger are ignored by Git.
 
-## 👋 Getting Started
+```sh
+cd apps/server
+node --env-file=.env src/server.mjs
+```
 
-Mimik turns any repetitive browser task into a documented, shareable guide in seconds. It runs entirely in your browser. No backend, no account, no telemetry, and nothing ever leaves your device.
+Defaults authorize **zero spending**. Enable only after setting the key, explicit free-credit confirmation, known amount/expiry and reviewed budget. The optional web reviewer code is not a model API key.
 
-Whether you're documenting internal tools, writing product tutorials, or onboarding a teammate, Mimik captures every click, keystroke, and navigation automatically so you can focus on the work.
+The planned model is `nvidia/Nemotron-3_5-Lightning` through `https://api.tokenfactory.nebius.com/v1/chat/completions`; Super is allowlisted too. Nemotron proposes semantic correspondence and wording from step text/action/labels/page paths. Screenshots stay local. IDs, shape and coverage are checked; semantic correctness remains a human judgment.
 
-Every meaningful action becomes a step: clicks on buttons and links, form inputs, keyboard shortcuts, clipboard actions, drag events, and page navigations. Rapid clicks on nearby elements are merged so guides stay clean, and clicks are intercepted before the page navigates away, so nothing is lost on SPAs or full page loads.
+The outbound-text preview appears before sending. Input values and URL queries are excluded; the server masks common email/credential patterns. Descriptions and paths can still contain private information, so this is not comprehensive anonymization.
 
-Each step gets a screenshot with the clicked element highlighted and zoomed in. No manual cropping, no annotation tools to learn.
+See [server configuration](apps/server/README.md). Application cost estimates are not account balances or invoices. Keep an exclusive allowance, known expiry, margin and persistent ledger.
 
-Need the recording to look away for a moment? **Pause** stops capture without ending the recording, and **Resume** picks up where you left off. Entering Smart blur pauses it the same way.
+## Test
 
-| Browser | Version | Install |
-| ------- | ------- | ------- |
-| Chrome  | [![Chrome Version][chrome-version-shield]][chrome-link]   | [Chrome Web Store][chrome-link] |
-| Firefox | [![Firefox Version][firefox-version-shield]][firefox-link] | [Firefox Add-ons][firefox-link]  |
-| Edge    | [![Edge Version][edge-version-shield]][edge-link]          | [Microsoft Edge Add-ons][edge-link] |
+```sh
+pnpm --filter @guidepatch/web typecheck
+pnpm --filter @guidepatch/web test
+npm --prefix apps/server test
+pnpm --filter @guidepatch/web test:e2e --workers=1
+```
 
-Available in English, Spanish, Brazilian Portuguese, French, German, and Simplified Chinese. The AI description language is set separately, so you can run Mimik in English and generate guides in Spanish, or any combination.
+New tests cover ambiguous repeated steps, invalid references, manual wording, moved chapters/notes, screenshot-change preservation, review/undo/reload, archive round trips, escaped HTML and budget/provider failures. One browser worker is used; artifacts have unique paths.
 
-> \[!IMPORTANT]
->
-> **⭐️ Star the repo** if Mimik saves you time. It helps other people discover it!
+Earlier browser runs actually opened the downloaded HTML and exercised Previous/Next in a clean page. After a separate review tool refused local-file execution, later checks inspect the export and exercise the ordinary HTTP preview instead of retrying the refused operation. The review limitation is recorded.
 
-<a href="https://github.com/westpoint-io/mimik">
-  <img width="100%" alt="Star Mimik on GitHub" src="https://github.com/user-attachments/assets/80d304da-a765-4bde-bf49-b1bdcb4fe804" />
-</a>
+The inherited Mimik suite passed 1,964 tests during baseline verification. These are upstream tests, not new GuidePatch tests. See [validation evidence](submission/validation.md).
 
-<div align="right">
+## Deployment
 
-[![Back to top][back-to-top]](#readme-top)
+The Node service serves the web build and API. Use one instance and a durable SQLite volume. Public configuration requires an exact HTTPS origin and a reviewer code of at least 24 characters; local HTTP is supported. TLS can terminate at a reverse proxy.
 
-</div>
+Docker/Compose files are provided but have not been built or deployed in this environment. The named ledger volume must survive container replacement. Configure keys through private runtime secrets, never build arguments/client assets. A development allocation is not automatically a funded judging allocation.
 
-## ✨ Features
+## Upstream and contribution
 
-### 🔒 Smart blur
+This repository begins at [Mimik extension v1.4.1](https://github.com/westpoint-io/mimik/tree/v1.4.1), commit `0de93847e51c5610378d3498c5ecfbef4047d07f`, MIT. The inherited recorder, guide types, screenshot renderer/redaction, bundle parser and static exporters belong to Westpoint/Mimik. Its README is preserved in [UPSTREAM_README.md](UPSTREAM_README.md).
 
-Smart blur is a mode you enter while recording, not an always-on filter. Click **Smart blur** and capture pauses, Mimik detects and masks sensitive data on the page — emails, phone numbers, SSNs, credit cards, IP addresses, MAC addresses — and screenshots of that page keep it hidden once you click **Done**. Toggle each category independently.
+GuidePatch adds `apps/web` and `apps/server`: cross-recording semantic update review, retained editorial content and note anchors, an independent walkthrough/control layer, provenance records, and bounded server-side Nebius integration. Shared upstream packages and the recorder are preserved.
 
-Need to blur something custom? The manual blur picker lets you select any DOM element and mask it across every screenshot where it appears.
+Existing Mimik AI rewriting, version history and insertion of recordings are not claimed as new inventions. The contribution is reviewing updates between independent recordings and carrying approved results into actual deliverables.
 
-<details>
-<summary><strong>What Smart blur does not cover</strong></summary>
+See [notices](THIRD_PARTY_NOTICES.md) and [MIT license](LICENSE). Model licenses are separate; weights are not distributed.
 
-<br/>
+## Limits
 
-Smart blur works by scanning text nodes and input values in the page's top frame. That leaves real gaps, all structural. If you rely on this for GDPR or similar, check your screenshots rather than assuming a clean one is a safe one:
-
-| Not covered | Why |
-|-------------|-----|
-| Content inside iframes | Skipped entirely; cross-origin frames are unreachable from the page |
-| Shadow DOM | The scan walks the document and does not descend into shadow roots |
-| Text painted on a `<canvas>`, and text inside images | Pixels, not text |
-| CSS `::before` / `::after` content | Not a text node |
-| `<select>` and `<option>` text | Excluded from the scan |
-| Values held only in attributes, such as `title` or `alt` | Only text nodes and input values are scanned |
-| Frames other than the top one | The overlay and the scan run in the top frame only |
-| Any tab but the one you entered the mode on | Only that tab is scanned; a second tab on the same app is not |
-| Text that appears after you click **Done** | The scan stops with the overlay, so an SPA re-render, the next page of a list, or a navigation is unmasked — re-enter Blur there |
-
-Two things worth knowing about what *is* handled: a match inside SVG `<text>` is removed from the render rather than blurred, because the mask is an HTML element that SVG will not draw — the data does not leak, but it disappears instead of blurring. And a matching `<input>` or `<textarea>` is blurred **as a whole field**, not just the matched substring.
-
-Blur applies from the moment you enter the mode onward. Screenshots already captured before that are not masked retroactively — delete those steps in the editor instead.
-
-</details>
-
-https://github.com/user-attachments/assets/f30fbcde-a705-45aa-b7bd-374e4762e6be
-
-<div align="right">
-
-[![Back to top][back-to-top]](#readme-top)
-
-</div>
-
-### 🧠 AI descriptions (optional)
-
-Bring your own API key (OpenAI or Anthropic) and Mimik generates human-readable step descriptions like *"Click the **Submit** button to save changes"* instead of the rule-based `Click Submit`.
-
-Descriptions are generated from a lightweight DOM context (~50-100 tokens), not screenshots. Roughly 15-30x cheaper than vision models. Choose the language you want descriptions in (English, Spanish, Portuguese, French, German, Chinese).
-
-https://github.com/user-attachments/assets/ce797986-56d1-4f72-b149-17463684cdd7
-
-<div align="right">
-
-[![Back to top][back-to-top]](#readme-top)
-
-</div>
-
-### ▶️ Guide Me replay
-
-Replay any guide live on a real page. Mimik highlights the next element to click, tracks your progress step by step, and advances automatically as you interact. Perfect for onboarding teammates or walking through a process yourself.
-
-https://github.com/user-attachments/assets/8df5662f-e5e1-4a79-9c84-6f38becc4d03
-
-<div align="right">
-
-[![Back to top][back-to-top]](#readme-top)
-
-</div>
-
-### 🎙️ Voice narration (optional)
-
-Talk through the workflow out loud while you record and Mimik turns what you said into the step
-descriptions. Audio is transcribed with your own key (OpenAI or Groq) and matched to the steps it
-belongs to, so you narrate once instead of writing every step by hand.
-
-The full transcript is kept, not just the parts that made it into a step. Open **Transcript** on a
-guide to see everything you said, including the lines nothing was matched to, and add any of them to
-a step. Editing a step never destroys the spoken original either — the step editor can always put
-back what you actually said. The transcript stays on your device, is never part of an exported guide, and is
-deleted with the guide.
-
-https://github.com/user-attachments/assets/41ef17fd-0d02-4e17-81c6-30ba2b7c47d0
-
-<div align="right">
-
-[![Back to top][back-to-top]](#readme-top)
-
-</div>
-
-### ✏️ Guide editor
-
-Fix a guide after the fact without re-recording. Crop, annotate and redact any screenshot, rewrite a
-step with AI inline, drop headings and notes between steps, reorder or bulk-delete, and roll back
-through version history.
-
-https://github.com/user-attachments/assets/b7eb0f6f-8957-4dbc-ab23-e23747719244
-
-<div align="right">
-
-[![Back to top][back-to-top]](#readme-top)
-
-</div>
-
-### 🔊 Video voice-over (optional)
-
-Turn it on in the export panel and every step of a video export is read aloud, using your own OpenAI
-or ElevenLabs key. If you already set an OpenAI key for AI descriptions, Mimik reuses it (unless those point at a custom
-server, whose key stays there) — there is nothing else to sign up for. Narrated steps hold on screen until the voice finishes, so nothing gets
-cut off, and clips are cached locally so re-exporting the same guide costs nothing.
-
-Off by default: holding a key never turns narration on, you do.
-
-https://github.com/user-attachments/assets/e82132e4-caf1-49db-9077-d6eade210a89
-
-<div align="right">
-
-[![Back to top][back-to-top]](#readme-top)
-
-</div>
-
-### 📤 Multi-format export
-
-Share guides in whatever format fits your workflow:
-
-- **Video**: narrated walkthrough, mp4/H.264, with the cursor moving to each target — optionally with an
-  OpenAI or ElevenLabs voice-over reading every step aloud, which also makes the export usable under Section 508
-- **GIF**: short looping clip for a chat thread or an issue comment
-- **PDF**: print-ready, A4 portrait with auto page breaks
-- **DOCX**: open and keep editing in Word
-- **HTML**: self-contained, share anywhere, base64-embedded images
-- **Markdown**: paste into Notion, GitHub, internal docs, wikis
-- **Mimik file**: the only format that imports back — see [Share a guide](#-share-a-guide) below
-
-All exports are generated client-side. Nothing touches a server.
-
-https://github.com/user-attachments/assets/2a91221b-0f77-484d-9a47-74938a4ee585
-
-<div align="right">
-
-[![Back to top][back-to-top]](#readme-top)
-
-</div>
-
-### 📦 Share a guide
-
-Export a guide as a **`.mimik` file** and someone else can import it into their own
-Mimik — same steps, same screenshots, still editable, and still replayable with Guide
-Me. It's a plain zip: a manifest, the screenshots, and a `README.md` so the file still
-reads as a document to anyone without the extension.
-
-It travels as a file, so sharing works the same way anything else does — email it, drop
-it in Slack, commit it to a repo. There's no account and no server involved.
-
-Because a guide can hold more than you meant to send, an export decides what leaves:
-
-- **Blurred areas are burnt into the pixels** before the file is written, so the
-  recipient has nothing to un-blur.
-- **Text you typed into fields is removed** from the step text, title and links, not
-  just from the stored value.
-- **Links are trimmed to the page address** by default, dropping the query strings that
-  carry session tokens.
-
-Screenshots still show whatever was on screen when they were taken — use the blur tool
-for anything sensitive that the camera caught.
-
-To import, open the dashboard and click **Import**, or drop a `.mimik` file onto your
-library. You'll see what the sender removed before anything is added.
-
-<div align="right">
-
-[![Back to top][back-to-top]](#readme-top)
-
-</div>
-
-## 🔐 Privacy & storage
-
-Guides, steps, and screenshots live on your device. There's no backend, no account, no telemetry. Your API keys (if you bring one) never leave your browser — they're stored locally and used to call the provider you chose directly.
-
-If you are masking personal data before sharing a guide, read [what Smart blur does not cover](#-smart-blur) first — it cannot reach iframes, shadow DOM, or text drawn into images.
-
-Two things do leave the browser, both documented in the [privacy policy](https://mimik.westpoint.io/privacy/): site icons are fetched from Google's favicon service, which sends that site's domain, and the optional AI, voice narration and video voice-over features send text or audio to the provider you configured — voice-over sends each step's text at export time, and only when you turn it on.
-
-<div align="right">
-
-[![Back to top][back-to-top]](#readme-top)
-
-</div>
-
-## 🤝 Contributing
-
-Contributions of all kinds are welcome: bug reports, feature requests, PRs, and translations.
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup, project layout, and contributor guidelines.
-
-<div align="right">
-
-[![Back to top][back-to-top]](#readme-top)
-
-</div>
-
-## ⭐ Star History
-
-<a href="https://www.star-history.com/#westpoint-io/mimik&Timeline">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=westpoint-io/mimik&type=Timeline&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=westpoint-io/mimik&type=Timeline" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=westpoint-io/mimik&type=Timeline" width="800" />
-  </picture>
-</a>
-
-<div align="right">
-
-[![Back to top][back-to-top]](#readme-top)
-
-</div>
-
-## 📜 License
-
-MIT © [Westpoint](https://github.com/westpoint-io). See [LICENSE](./LICENSE) for details.
-
-<div align="right">
-
-[![Back to top][back-to-top]](#readme-top)
-
-</div>
-
-<!-- LINK GROUP -->
-
-[back-to-top]: https://img.shields.io/badge/-BACK_TO_TOP-1E1B4B?style=flat-square
-
-[license-shield]: https://img.shields.io/badge/license-MIT-4F46E5?style=flat-square&labelColor=1E1B4B
-[license-link]: ./LICENSE
-
-[mv3-shield]: https://img.shields.io/badge/manifest-v3-3730A3?style=flat-square&labelColor=1E1B4B
-[mv3-link]: https://developer.chrome.com/docs/extensions/mv3/intro/
-
-[local-shield]: https://img.shields.io/badge/storage-100%25%20local-4F46E5?style=flat-square&labelColor=1E1B4B
-[local-link]: #-100-local-storage
-
-[no-account-shield]: https://img.shields.io/badge/account-not%20required-4F46E5?style=flat-square&labelColor=1E1B4B
-[no-account-link]: #-100-local-storage
-
-[star-shield]: https://img.shields.io/github/stars/westpoint-io/mimik?style=flat-square&label=stars&color=4F46E5&labelColor=1E1B4B
-[star-link]: https://github.com/westpoint-io/mimik/stargazers
-
-[contributors-shield]: https://img.shields.io/github/contributors/westpoint-io/mimik?style=flat-square&labelColor=1E1B4B
-[contributors-link]: https://github.com/westpoint-io/mimik/graphs/contributors
-
-[last-commit-shield]: https://img.shields.io/github/last-commit/westpoint-io/mimik?style=flat-square&label=commit&labelColor=1E1B4B
-
-[issues-shield]: https://img.shields.io/github/issues/westpoint-io/mimik?style=flat-square&labelColor=1E1B4B
-[issues-link]: https://github.com/westpoint-io/mimik/issues
-
-[chrome-version-shield]: https://img.shields.io/chrome-web-store/v/jmfohdaflahliammccpiadmkcibohgha?label=Chrome%20Version&style=flat-square&logo=googlechrome&logoColor=C7D2FE&color=4F46E5&labelColor=1E1B4B
-[chrome-link]: https://chromewebstore.google.com/detail/mimik/jmfohdaflahliammccpiadmkcibohgha
-[firefox-version-shield]: https://img.shields.io/amo/v/mimik?label=Firefox%20Version&style=flat-square&logo=firefoxbrowser&logoColor=C7D2FE&color=4F46E5&labelColor=1E1B4B
-[firefox-link]: https://addons.mozilla.org/en-US/firefox/addon/mimik/
-[edge-version-shield]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fmicrosoftedge.microsoft.com%2Faddons%2Fgetproductdetailsbycrxid%2Fhgjemhfoffebbollleajkpefblppleai&query=%24.version&label=Edge%20Version&style=flat-square&logo=microsoftedge&logoColor=C7D2FE&color=4F46E5&labelColor=1E1B4B
-[edge-link]: https://microsoftedge.microsoft.com/addons/detail/hgjemhfoffebbollleajkpefblppleai
-</content>
-</invoke>
+- Bundle v1 only, at most 80 steps/30 MB per input; these are safety bounds, not measured model quality claims.
+- One-to-one mapping; splits/merges remain unmatched for human judgment.
+- Bundles do not contain complete after-state or full DOM history; recorded actions alone do not establish success.
+- Session recovery is in the same browser. JSON is an audit log, not a portable project backup; keep both source files.
+- Arbitrary website execution, desktop recording and automated software repair are outside this companion.
+- Real model quality/cost/latency, public hosting and final submission remain pending until evidenced.

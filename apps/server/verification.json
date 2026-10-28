@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-28",
+  "runtime": "Node.js 24.15.0 on Windows",
+  "testCommand": "npm --prefix apps/server test",
+  "testsPassed": 24,
+  "testsFailed": 0,
+  "syntaxCommand": "npm --prefix apps/server run check",
+  "syntaxExitCode": 0,
+  "providerModeDuringTests": "injected mock responses; no Nebius request",
+  "actualNebiusCalls": 0,
+  "verified": [
+    "real local HTTP endpoint behavior",
+    "strict step coverage and reference validation",
+    "persistent SQLite reservations across restart",
+    "separate development and judging ledgers in one database",
+    "atomic reservation during concurrent requests",
+    "timeouts and provider errors retain unknown spend",
+    "rate, concurrency, origin, host and access-token boundaries",
+    "static file MIME and path containment"
+  ],
+  "notVerified": [
+    "Nebius account eligibility, balance, expiry or payment controls",
+    "live JSON-mode compatibility and alignment quality",
+    "production TLS, durable volume and judging access",
+    "root Biome lint (new server path is excluded by upstream configuration)"
+  ]
+}

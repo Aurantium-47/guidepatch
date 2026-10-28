@@ -12,3 +12,11 @@ mockups/
 public/transformers/
 apps/*/out/
 apps/*/dist/
+.env
+.env.*
+!.env.example
+apps/server/data/
+artifacts/
+playwright-report/
+test-results/
+implement-stage/

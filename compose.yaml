@@ -1,0 +1,11 @@
+services:
+  guidepatch:
+    build: .
+    env_file: apps/server/.env
+    ports:
+      - "127.0.0.1:4318:4318"
+    volumes:
+      - guidepatch-ledger:/data
+    restart: unless-stopped
+volumes:
+  guidepatch-ledger:

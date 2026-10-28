@@ -1,0 +1,12 @@
+.git
+**/node_modules
+**/.output
+**/.wxt
+**/dist
+**/.env
+**/.env.*
+**/data
+artifacts
+implement-stage
+research
+coverage
