@@ -6,7 +6,7 @@
 |---|---|---|
 | Upstream extension typecheck/build | Passed; Chrome output 4.50 MB | Original Mimik capabilities |
 | Upstream baseline suite | 155 files / 1,964 tests passed with bounded workers | Not GuidePatch-authored tests |
-| GuidePatch domain suite | 15 tests passed | Includes unchanged-but-pending manual-pair export refusal |
+| GuidePatch domain suite | 16 tests passed | Includes unchanged-but-pending manual-pair export refusal and proposed AI wording requiring review even when source fields match |
 | GuidePatch server suite | 24 tests passed | Mock provider and real local HTTP/SQLite; no Nebius calls |
 | Web production build/typecheck | Passed | Not a model or deployment result |
 | Browser review/export/restore run | 5 tests passed before the later file-execution restriction | Both export formats, retained note/wording, recovery/failure and mobile layout |

@@ -138,4 +138,17 @@ describe('one-to-one evidence and review semantics', () => {
     await expect(exportReviewed(w,'bundle')).rejects.toThrow('Review every change');
     await expect(exportReviewed(w,'html')).rejects.toThrow('Review every change');
   });
+  it('requires review when a model rewrites otherwise identical recorded steps', async () => {
+    const a=guide([{...step('old',0,'Click Save.'),descriptionSource:'heuristic'}]);
+    const b=guide([{...step('new',0,'Click Save.'),descriptionSource:'heuristic'}]);
+    const alignment=validateAlignment([{oldId:'old',newId:'new',kind:'unchanged',description:'Select Save to publish the changes.',reason:'Suggested clearer wording',uncertainty:''}],a.steps,b.steps);
+    const rows=makeRows(alignment);
+    expect(rows[0]).toMatchObject({kind:'changed',decision:'pending'});
+    const w:Workspace={oldGuide:a,newGuide:b,rows,analysis:{source:'nebius',model:'mock-only',alignments:alignment},order:'latest',title:'Reviewed',savedAt:1};
+    expect(buildReviewedGuide(w).steps[0].description).toBe('Click Save.');
+    await expect(exportReviewed(w,'bundle')).rejects.toThrow('Review every change');
+    await expect(exportReviewed(w,'html')).rejects.toThrow('Review every change');
+    rows[0].decision='accept';
+    expect(buildReviewedGuide(w).steps[0].description).toBe('Select Save to publish the changes.');
+  });
 });

@@ -40,7 +40,8 @@ export function validateAlignment(rows: Alignment[], oldSteps: Step[], newSteps:
   return rows.map(r => {
     if (!r.oldId || !r.newId) return { ...r };
     const old = oldMap.get(r.oldId)!, updated = newMap.get(r.newId)!;
-    const changed = r.imageChanged || old.description !== updated.description || old.action !== updated.action || old.url !== updated.url || Boolean(old.blockType) !== Boolean(updated.blockType);
+    const suggestedWordingChanged = Boolean(r.description) && r.description !== updated.description;
+    const changed = r.imageChanged || suggestedWordingChanged || old.description !== updated.description || old.action !== updated.action || old.url !== updated.url || Boolean(old.blockType) !== Boolean(updated.blockType);
     const moved = oldRank.indexOf(r) !== newRank.indexOf(r);
     return { ...r, kind: changed ? 'changed' : moved ? 'moved' : 'unchanged', moved, description: r.description || updated.description };
   });
